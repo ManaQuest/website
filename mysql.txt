@@ -1,0 +1,26 @@
+create table product(
+Id int not null AUTO_INCREMENT primary key,
+Name varchar(50) not null unique,
+Count int not null);
+
+
+
+
+insert product(Name, Count)
+values ('Cards',1000),
+       ('Pen',500),
+       ('Pencil',500);
+
+
+
+
+drop table buyers;
+create table buyers(
+Id int not null AUTO_INCREMENT primary key,
+First_name varchar(50) not null unique,
+Last_Name varchar(50) not null unique,
+Telephone varchar(15) not null unique,
+House varchar(50) not null unique,
+Email varchar(50) not null unique,
+Name_Product varchar(50) not null,
+Count int not null);

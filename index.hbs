@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Магазин</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.logo {
+			width: 30vw;
+			margin: 0 auto;
+		}
+
+		.card {
+			width: 15vw;
+			margin: 0 auto;
+			border: solid #000000 1px;
+		}
+
+		a {
+			text-decoration: none;
+			color: black;
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div align="center">
+		<div class='logo'></img url=''></div>
+		<div>
+			<p>Магазин</p>
+		</div>
+		<div>
+			<p>Товары</p>
+		</div>
+	</div>
+	<div class='main'>
+		{{#each Results}}
+		<div class='card'>
+			{{#with this}}
+			<div align="center" style='width:50%; margin:0 auto;'>
+				{{Name}}
+			</div>
+			<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/{{Name}}'>img</a></div>
+			<button
+				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'>
+				<a href='/{{Name}}/buy'>Купить</a>
+			</button>
+			<div align="center" style='margin:5px auto 0 auto;'>
+				Осталось {{Count}} штук(и)
+			</div>
+			{{/with}}
+		</div>
+		{{/each}}
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Магазин</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.logo {
+			width: 30vw;
+			margin: 0 auto;
+		}
+
+		.card {
+			width: 30vh;
+			margin: 0 auto;
+			border: solid #000000 1px;
+		}
+
+		a {
+			text-decoration: none;
+			color: black;
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+
+		input {
+			display: block;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+
+<body>
+	<a href="/">Назад</a>
+	<div class='main'>
+		{{#each Results}}
+		{{#with this}}
+		<div align="center" style='width:50%; margin:0 auto;'>
+			{{Name}}
+		</div>
+		<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/{{Name}}'>img</a></div>
+		<button
+			style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:4vw;'>
+			<a href='/{{Name}}/buy'>Купить</a>
+		</button>
+		<div align="center" style='margin:5px auto 0 auto;'>
+			Осталось {{Count}} штук(и)
+		</div>
+		<div style="margin:0 auto;">
+			<form method="post" name="forma" action="/{{Name}}/purchased">
+				<input type="text" name="first_name" placeholder="Имя" required />
+				<input type="text" name="last_name" placeholder="Фамилия" required />
+				<input type="email" name="email" placeholder="email" required />
+				<input type="text" name="house" placeholder="№ дома" required />
+				<input type="tel" name="telephone" placeholder="Телефон" pattern="[0-9]{7}" required />
+				<input type="number" name="count" placeholder="Количество"/>
+				<input type="submit" name="button" placeholder="Телефон" required />
+				<input type="hidden" name="name" value="{{Name}}"/>
+			</form>
+		</div>
+		{{/with}}
+		{{/each}}
+	</div>
+</body>
+
+</html>
