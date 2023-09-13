@@ -32,9 +32,16 @@ app.get("/*.js", function (req, res) {
   res.sendFile(__dirname + req.url);
 });
 app.post("*/purchased", function (req, res) {
-  connection.query("insert buyers(First_name,Last_Name,Telephone,House,Email,Name_Product,Count) values ('"+ req.body.first_name+"','"+req.body.last_name+"','"+req.body.telephone+"','"+req.body.house+"','"+req.body.email+"','"+req.body.name+"',"+ req.body.count+");");
-  connection.query("UPDATE product set Count = Count -"+req.body.count+";");
-  res.redirect("/");
+  connection.query("UPDATE product set Count = Count -" + req.body.count + " where Count-" + req.body.count + ">0 and Name='" + req.body.name + "';", function (request, response) {
+    if (response['changedRows'] == 1) {
+      connection.query("insert buyers(First_name,Last_Name,Telephone,House,Email,Name_Product,Count) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.telephone + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + ");");
+      res.redirect("/");
+    }
+    else{
+      res.redirect("/Pen");
+    }
+  });
+
 });
 app.get("*", function (request, response) {
   response.send(request.url)
