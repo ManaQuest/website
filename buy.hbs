@@ -49,14 +49,13 @@
 			Осталось {{Count}} штук(и)
 		</div>
 		<div style="margin:0 auto;">
-			<form method="post" name="forma" action="/{{Name}}/purchased">
+			<form method="post" name="forma">
 				<input type="text" name="first_name" placeholder="Имя" required />
 				<input type="text" name="last_name" placeholder="Фамилия" required />
 				<input type="email" name="email" placeholder="email" required />
 				<input type="text" name="house" placeholder="№ дома" required />
-				<input type="tel" name="telephone" placeholder="Телефон" pattern="[0-9]{7}" required />
 				<input type="number" name="count" placeholder="Количество"/>
-				<input type="submit" name="button" placeholder="Телефон" required />
+				<input type="submit" name="button" value="Купить" required />
 				<input type="hidden" name="name" value="{{Name}}"/>
 			</form>
 		</div>
