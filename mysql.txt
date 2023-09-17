@@ -22,4 +22,12 @@ Last_Name varchar(50) not null unique,
 House varchar(50) not null unique,
 Email varchar(50) not null unique,
 Name_Product varchar(50) not null,
-Count int not null);
+Count_in_Order int not null); 
+
+
+drop table users;
+create table users(
+Id int not null AUTO_INCREMENT primary key,
+First_name varchar(50) unique,
+Last_Name varchar(50) unique,
+Email varchar(50) unique);

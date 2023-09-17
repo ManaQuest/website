@@ -38,8 +38,8 @@
 		</div>
 	</div>
 	<div class='main'>
-		<div id="popup" 
-			style="width:30vw;height:30vh;position:fixed; background-color:gray;left:35vw;top:30vh;">
+		<div id="popup"
+			style="width:30vw;height:30vh;position:fixed; background-color:gray;left:35vw;top:30vh;display:{{display}};">
 			<p>{{Id}}</p>
 		</div>
 		{{#each Results}}
@@ -53,6 +53,12 @@
 				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'>
 				<a href='/{{Name}}/buy'>Купить</a>
 			</button>
+			<input type="number" max="{{Count}}" name="count" id="{{Id}}" placeholder="Количество" />
+			<button
+				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'
+				onclick="basket('{{Name}}',{{Id}})">
+				<a href='/#'>В корзину</a>
+			</button>
 			<div align="center" style='margin:5px auto 0 auto;'>
 				Осталось {{Count}} штук(и)
 			</div>
@@ -61,8 +67,24 @@
 		{{/each}}
 	</div>
 	<script>
-		//document.getElementById("popup").style.display = "none";
-		//console.log(performance.now());
+		setTimeout(function () { document.getElementById("popup").style.display = "none"; }, 2000);
+		console.log(localStorage.getItem("id"));
+		if (localStorage.getItem("id") == null) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "/id", "true");
+			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+			xhr.send(JSON.stringify({ "id": -1 }));
+			xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
+		}
+		function basket(name, id) {
+			var input = document.getElementById(id);
+			if (parseInt(input.value) < parseInt(input.max)) {
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", "/basket", "true");
+				xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+				xhr.send(JSON.stringify({ "name": name, id: localStorage.getItem("id"), count: parseInt(input.value) }));
+			}
+		}
 	</script>
 </body>
 
