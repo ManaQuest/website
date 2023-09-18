@@ -80,7 +80,7 @@ app.post("/basket", function (req, res) {
   connection.query("select * from product where Name='" + req.body.name + "';", function (err, result) {
     var file = fs.readFileSync("info.json", "utf8");
     file = JSON.parse(file);
-    for (i of file) {
+    for (i of file)
       if (i.id == req.body.id) {
         if (i.basket === undefined) {
           i.basket = [];
@@ -89,56 +89,33 @@ app.post("/basket", function (req, res) {
         if (!i.basket.includes(req.body.name)) {
           i.basket.push(req.body.name);
           i.count.push(req.body.count);
+          if (!file[0].name.includes(req.body.name)) {
+            file[0].name.push(req.body.name);
+            file[0].count.push(req.body.count);
+          }
+          else if(file[0].count[file[0].name.indexOf(req.body.name)] + req.body.count<=result[0]["Count"])
+            file[0].count[file[0].name.indexOf(req.body.name)] += req.body.count;
         }
-        else
-          if (i.count[i.basket.indexOf(req.body.name)] + req.body.count <= result[0]["Count"])
-            i.count[i.basket.indexOf(req.body.name)] += req.body.count;
-          else
-            i.count[i.basket.indexOf(req.body.name)] = result[0]["Count"];
-        res.send(i);
+        else if (i.count[i.basket.indexOf(req.body.name)] + req.body.count <= result[0]["Count"]) {
+          i.count[i.basket.indexOf(req.body.name)] += req.body.count;
+          file[0].count[file[0].name.indexOf(req.body.name)] += req.body.count;
+          console.log(file[0].name.indexOf(req.body.name));
+        }
       }
-      if (i.basket)
-        if (result[0]["Count"] < i.count[i.basket.indexOf(req.body.name)])
-          i.count[i.basket.indexOf(req.body.name)] = result[0]["Count"];
-    }
-    console.log(file);
-    fs.writeFileSync("info.json", JSON.stringify(file));
-  });
-});
-app.post("/basket_user", function (req, res) {
-  var file = fs.readFileSync("info.json", "utf8");
-  file = JSON.parse(file);
-  for (i of file)
-    if (i.id = req.body.id)
-      res.send(i);
-});
-app.post("/update_basket", function (req, res) {
-  connection.query("select * from product where Name='" + req.body.name + "';", function (err, result) {
-    var file = fs.readFileSync("info.json", "utf8");
-    file = JSON.parse(file);
-    if (req.body.count < 0)
-      req.body.count *= -1;
-    for (i of file)
-      if (i.id = req.body.id)
-        if (req.body.method == 'add')
-          if (req.body.count + i.count[i.basket.indexOf(req.body.name)] <= result[0]["Count"]) {
-            i.count[i.basket.indexOf(req.body.name)] += req.body.count;
-            res.send(i);
+    if (result[0]["Count"] < file[0].count[file[0].name.indexOf(req.body.name)])
+      for (let i = file.length - 1; i >= 0; i--)
+        if (file[i].basket)
+          if (file[i].basket.includes(req.body.name) && file[0].count[file[0].name.indexOf(req.body.name)] - result[0]["Count"] >= file[i].count[file[i].basket.indexOf(req.body.name)]) {
+            file[0].count[file[0].name.indexOf(req.body.name)] -= file[i].count[file[i].basket.indexOf(req.body.name)];
+            file[i].count[file[i].basket.indexOf(req.body.name)] = 0;
+            file[i].basket.splice(file[i].basket.indexOf(req.body.name), 1);
+            file[i].count.splice(file[i].basket.indexOf(req.body.name), 1);
           }
-          else {
-            i.count[i.basket.indexOf(req.body.name)] = result[0]["Count"];
-            res.send(i);
-          }
-        else
-          if (i.count[i.basket.indexOf(req.body.name)] - req.body.count > 0) {
-            i.count[i.basket.indexOf(req.body.name)] -= req.body.count;
-            res.send(i);
-          }
-          else {
-            i.count[i.basket.indexOf(req.body.name)] = 0;
-            //i.basket.splice(i.basket.indexOf(req.body.name),1); Доработать
-            //i.count.splice(i.basket.indexOf(req.body.name),1);
-            res.send(i);
+          else if (file[i].basket.includes(req.body.name) && file[0].count[file[0].name.indexOf(req.body.name)] - result[0]["Count"] < file[i].count[file[i].basket.indexOf(req.body.name)]) {
+            file[i].count[file[i].basket.indexOf(req.body.name)] -= file[0].count[file[0].name.indexOf(req.body.name)] - result[0]["Count"];
+            file[0].count[file[0].name.indexOf(req.body.name)] -= file[0].count[file[0].name.indexOf(req.body.name)] - result[0]["Count"];
+            if (file[i].count[file[i].basket.indexOf(req.body.name)] > file[0].count[file[0].name.indexOf(req.body.name)])
+              file[i].count[file[i].basket.indexOf(req.body.name)] = file[0].count[file[0].name.indexOf(req.body.name)]
           }
     console.log(file);
     fs.writeFileSync("info.json", JSON.stringify(file));
