@@ -43,6 +43,7 @@
 			<p>{{Id}}</p>
 		</div>
 		<div id="basket_user"></div>
+		<button><a id="a_buy_all" href="/basket/buy">Купить всё</a></button>
 		{{#each Results}}
 		<div class='card'>
 			{{#with this}}
@@ -70,6 +71,7 @@
 	</div>
 	<script>
 		setTimeout(function () { document.getElementById("popup").style.display = "none"; }, 2000);
+		let a = document.getElementById("a_buy_all");
 		if (localStorage.getItem("id") == null) {
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/id", "true");
@@ -84,6 +86,7 @@
 			xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
 			xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
 		}
+		a.href+='?id='+localStorage.getItem("id");
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", "/basket_user", "true");
 		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -111,14 +114,16 @@
 			var con = document.getElementById("basket_user");
 			con.innerHTML = '';
 			for (let i = 0; i < basket.basket.length; i++) {
-				con.innerHTML += "<div><p style='margin:0 auto;width:10vw;'>" + basket.basket[i] + "</p></div>";
-				con.innerHTML += "<input type='number' max='" + i + "' name='count' id='basket_" + i + "' placeholder='Количество' style='width:14vw' />";
-				con.innerHTML += "<div><p style='margin:0 auto;width:10vw;'>" + basket.count[basket.basket.indexOf(basket.basket[i])] + "</p></div>";
-				con.innerHTML += "<button onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','add')\">Добавить</button>";
-				con.innerHTML += "<button onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','delete')\">Удалить</button>";
+				con.innerHTML += "<div><div><p style='margin:0 auto;width:10vw;'>" + basket.basket[i] + "</p></div>" +
+					"<button style='float:left;' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','delete')\">Удалить</button>" +
+					"<input style='float:left;' type='number' max='" + i + "' name='count' id='basket_" + i + "' placeholder='Количество' style='width:14vw' />" +
+					"<button style='float:left;' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','add')\">Добавить</button>" +
+					"<div><p style='margin:0 auto;width:10vw;'>" + basket.count[basket.basket.indexOf(basket.basket[i])] + "</p></div></div>";
+
+
 			}
 		}
-		function update_basket(product_id, name, method, max) {
+		function update_basket(product_id, name, method) {
 			var xhr = new XMLHttpRequest();
 			let input = document.getElementById(product_id);
 			console.log(input.value);

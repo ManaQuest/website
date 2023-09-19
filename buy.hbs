@@ -41,10 +41,6 @@
 			{{Name}}
 		</div>
 		<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/{{Name}}'>img</a></div>
-		<button
-			style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:4vw;'>
-			<a href='/{{Name}}/buy'>Купить</a>
-		</button>
 		<div align="center" style='margin:5px auto 0 auto;'>
 			Осталось {{Count}} штук(и)
 		</div>
@@ -61,7 +57,14 @@
 		</div>
 		{{/with}}
 		{{/each}}
+		{{#with Results}}
+		{{#each basket}}
+		{{this}}
+		{{/each}}
+		{{#each count}}
+		{{this}}
+		{{/each}}
+		{{/with}}
 	</div>
 </body>
-
 </html>

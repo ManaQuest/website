@@ -27,6 +27,13 @@ app.get('/', function (req, res) {
       }
     });
 });
+app.get("/basket/buy", function (req, res) {
+  var file = fs.readFileSync("info.json", "utf8");
+  file = JSON.parse(file);
+  for (i of file)
+    if (i.id == req.query.id)
+      {console.log(i);res.render(__dirname + '/buy.hbs', { Results: i });}
+});
 app.get("/:nameId/buy", function (req, res) {
   connection.query("select Name,Count from product where Name='" + req.params['nameId'] + "';",
     function (err, results) {
@@ -109,7 +116,7 @@ app.post("/basket_user", function (req, res) {
   var file = fs.readFileSync("info.json", "utf8");
   file = JSON.parse(file);
   for (i of file)
-    if (i.id = req.body.id)
+    if (i.id == req.body.id)
       res.send(i);
 });
 app.post("/update_basket", function (req, res) {
@@ -119,7 +126,7 @@ app.post("/update_basket", function (req, res) {
     if (req.body.count < 0)
       req.body.count *= -1;
     for (i of file)
-      if (i.id = req.body.id)
+      if (i.id == req.body.id && i.basket)
         if (req.body.method == 'add')
           if (req.body.count + i.count[i.basket.indexOf(req.body.name)] <= result[0]["Count"]) {
             i.count[i.basket.indexOf(req.body.name)] += req.body.count;
@@ -136,13 +143,16 @@ app.post("/update_basket", function (req, res) {
           }
           else {
             i.count[i.basket.indexOf(req.body.name)] = 0;
-            //i.basket.splice(i.basket.indexOf(req.body.name),1); Доработать
-            //i.count.splice(i.basket.indexOf(req.body.name),1);
+            i.count.splice(i.basket.indexOf(req.body.name), 1);
+            i.basket.splice(i.basket.indexOf(req.body.name), 1);
             res.send(i);
           }
     console.log(file);
     fs.writeFileSync("info.json", JSON.stringify(file));
   });
+});
+app.post("/buy_all", function (req, res) {
+  console.log(req.body);
 });
 app.get("*", function (request, response) {
   response.send(request.url)
