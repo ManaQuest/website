@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const fs = require("fs");
 const app = express();
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -21,9 +21,9 @@ app.get('/', function (req, res) {
       if (err) console.log(err);
       else {
         if (!req.query.res)
-          res.render(__dirname + '/index.hbs', { Results: results, display: 'none' });
+          res.render(__dirname + '/index.ejs', { Results: results, display: 'none', Id: "" });
         else
-          res.render(__dirname + '/index.hbs', { Results: results, display: 'block', Id: req.query.res });
+          res.render(__dirname + '/index.ejs', { Results: results, display: 'block', Id: req.query.res });
       }
     });
 });
@@ -32,13 +32,14 @@ app.get("/basket/buy", function (req, res) {
   file = JSON.parse(file);
   for (i of file)
     if (i.id == req.query.id)
-      {console.log(i);res.render(__dirname + '/buy.hbs', { Results: i });}
+      res.render(__dirname + '/buy.ejs', { Results: i, multi: true });
 });
 app.get("/:nameId/buy", function (req, res) {
   connection.query("select Name,Count from product where Name='" + req.params['nameId'] + "';",
     function (err, results) {
       if (err) console.log(err);
-      else { res.render(__dirname + '/buy.hbs', { Results: results }); }
+      else
+        res.render(__dirname + '/buy.ejs', { Results: results, multi: false });
     });
 });
 app.get("/*.js", function (req, res) {
@@ -46,6 +47,7 @@ app.get("/*.js", function (req, res) {
 });
 app.post("/purchased", function (req, res) {
   connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + ");", function (err, results) {
+    console.log(results);
     if (results['affectedRows'] == 1) {
       connection.query("UPDATE product set Count = Count -" + req.body.count + " where Count-" + req.body.count + ">0 and Name='" + req.body.name + "';", function (request, response) {
         if (response['changedRows'] == 1) {
@@ -53,7 +55,7 @@ app.post("/purchased", function (req, res) {
         }
         else {
           connection.query("delete from buyers where First_name='" + req.body.first_name + "' and Last_Name='" + req.body.last_name + "'");
-          res.render(__dirname + '/index.hbs', { Results: results, Id: "Нужного количества товара не осталось.", display: 'block' });
+          res.render(__dirname + '/index.ejs', { Results: results, Id: "Нужного количества товара не осталось.", display: 'block' });
         }
       });
     }
@@ -61,6 +63,9 @@ app.post("/purchased", function (req, res) {
       res.redirect("/?res=Человек с таким именем, фамилией, email или домом уже существует. Измените заказ или обратитесь ко мне.");
     }
   });
+});
+app.post("/purchased_all", function (req, res) {
+  console.log(req.body);
 });
 app.post("/id", function (req, res) {
   var file = fs.readFileSync("info.json", "utf8");
@@ -79,8 +84,10 @@ app.post("/id", function (req, res) {
     if (count == file.length) {
       file.push({ "id": parseInt(req.body.id) });
       fs.writeFileSync("info.json", JSON.stringify(file));
-      res.send({ "id": req.body.id });
+      res.send({ "id": parseInt(req.body.id) });
     }
+    else
+    res.send({ "id": parseInt(req.body.id) });
   }
 });
 app.post("/basket", function (req, res) {

@@ -39,35 +39,33 @@
 	</div>
 	<div class='main'>
 		<div id="popup"
-			style="width:30vw;height:30vh;position:fixed; background-color:gray;left:35vw;top:30vh;display:{{display}};">
-			<p>{{Id}}</p>
+			style="width:30vw;height:30vh;position:fixed; background-color:gray;left:35vw;top:30vh;display:<%=display %>;">
+			<p><%= Id %></p>
 		</div>
 		<div id="basket_user"></div>
 		<button><a id="a_buy_all" href="/basket/buy">Купить всё</a></button>
-		{{#each Results}}
+		<%for(i of Results){%>
 		<div class='card'>
-			{{#with this}}
 			<div align="center" style='width:50%; margin:0 auto;'>
-				{{Name}}
+				<%=i.Name%>
 			</div>
-			<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/{{Name}}'>img</a></div>
+			<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/<%=i.Name%>'>img</a></div>
 			<button
 				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'>
-				<a href='/{{Name}}/buy'>Купить</a>
+				<a href='/<%=i.Name%>/buy'>Купить</a>
 			</button>
-			<input type="number" max="{{Count}}" name="count" id="{{Id}}" placeholder="Количество"
-				onchange="update_count({{Id}})" style="width:14vw" />
+			<input type="number" max="<%=i.Count%>" name="count" id="<%=i.Id%>" placeholder="Количество"
+				onchange="update_count(<%=i.Id%>)" style="width:14vw" />
 			<button
 				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'
-				onclick="basket('{{Name}}',{{Id}})">
+				onclick="basket('<%=i.Name%>',<%=i.Id%>)">
 				<a href='/#'>В корзину</a>
 			</button>
 			<div align="center" style='margin:5px auto 0 auto;'>
-				Осталось {{Count}} штук(и)
+				Осталось <%=i.Count%> штук(и)
 			</div>
-			{{/with}}
 		</div>
-		{{/each}}
+		<%}%>
 	</div>
 	<script>
 		setTimeout(function () { document.getElementById("popup").style.display = "none"; }, 2000);
@@ -84,7 +82,8 @@
 			xhr.open("POST", "/id", "true");
 			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 			xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
-			xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
+			xhr.onload = function () {console.log("sdfsdfdf"); localStorage.setItem("id", JSON.parse(xhr.response).id); }
+			
 		}
 		a.href+='?id='+localStorage.getItem("id");
 		var xhr = new XMLHttpRequest();
@@ -126,7 +125,6 @@
 		function update_basket(product_id, name, method) {
 			var xhr = new XMLHttpRequest();
 			let input = document.getElementById(product_id);
-			console.log(input.value);
 			xhr.open("POST", "/update_basket", "true");
 			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 			xhr.send(JSON.stringify({ "name": name, id: localStorage.getItem("id"), "count": parseInt(input.value), "method": method }));
