@@ -17,12 +17,13 @@ values ('Cards',1000),
 drop table buyers;
 create table buyers(
 Id int not null AUTO_INCREMENT primary key,
-First_name varchar(50) not null unique,
-Last_Name varchar(50) not null unique,
-House varchar(50) not null unique,
-Email varchar(50) not null unique,
+First_name varchar(50) not null,
+Last_Name varchar(50) not null,
+House varchar(50) not null,
+Email varchar(50) not null,
 Name_Product varchar(50) not null,
-Count_in_Order int not null); 
+Count_in_Order int not null,
+Order_id int not null); 
 
 
 drop table users;

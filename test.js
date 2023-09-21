@@ -14,10 +14,17 @@ const connection = mysql.createConnection({
   password: "12345",
   database: "shop"
 });
-
 app.get('/', function (req, res) {
   connection.query("select * from product;",
     function (err, results) {
+      var file = fs.readFileSync("info.json", "utf8");
+      file = JSON.parse(file);
+      for (i of file) {
+        for (j of results)
+          if (i.basket.includes(j.Name) && i.count[i.basket.indexOf(j.Name)] > j.Count)
+            i.count[i.basket.indexOf(j.Name)] = j.Count;
+      }
+      fs.writeFileSync("info.json", JSON.stringify(file));
       if (err) console.log(err);
       else {
         if (!req.query.res)
@@ -46,27 +53,41 @@ app.get("/*.js", function (req, res) {
   res.sendFile(__dirname + req.url);
 });
 app.post("/purchased", function (req, res) {
-  connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + ");", function (err, results) {
-    console.log(results);
-    if (results['affectedRows'] == 1) {
-      connection.query("UPDATE product set Count = Count -" + req.body.count + " where Count-" + req.body.count + ">0 and Name='" + req.body.name + "';", function (request, response) {
-        if (response['changedRows'] == 1) {
-          connection.query("select * from buyers where First_name='" + req.body.first_name + "' and Last_Name='" + req.body.last_name + "'", function (er, result) { res.render(__dirname + '/letter.hbs', { Id: "Ваш номер заказа " + result[0]['Id'] + ". Вам выслано электронное письмо на почту.", display: 'block' }); });
-        }
-        else {
-          connection.query("delete from buyers where First_name='" + req.body.first_name + "' and Last_Name='" + req.body.last_name + "'");
-          res.render(__dirname + '/index.ejs', { Results: results, Id: "Нужного количества товара не осталось.", display: 'block' });
-        }
+  connection.query("UPDATE product set Count = Count -" + req.body.count + " where Count-" + req.body.count + ">=0 and Name='" + req.body.name + "';", function (request, response) {
+    if (response['changedRows'] == 1)
+      connection.query("select count(order_id) from buyers;", function (err, result) {
+        connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + "," + result[0]['count(order_id)'] + ");", function (err, results) {
+          //res.render(__dirname + '/letter.hbs', { Id: "Ваш номер заказа " + result[0]['count(order_id)'] + ". Вам выслано электронное письмо на почту.", display: 'block' });
+          res.redirect("/?res=Ваш номер заказа " + result[0]['count(order_id)'] + ". Вам выслано электронное письмо на почту.");
+        });
       });
-    }
-    else {
-      res.redirect("/?res=Человек с таким именем, фамилией, email или домом уже существует. Измените заказ или обратитесь ко мне.");
-    }
+    else
+      res.redirect("/?res=Нужного количества товара не осталось.");
   });
 });
 app.post("/purchased_all", function (req, res) {
-  console.log(req.body);
+  let sql = "insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order) values ";
+  for (i = 0; i < req.body.name.length; i++) {
+    sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name[i] + "'," + req.body.count[i] + ")";
+    if (i < req.body.name.length - 1)
+      sql += ",";
+  }
+  sql += ";";
 });
+async function update_all(name, count, i, max) {
+  if (i == max)
+    return 1;
+  console.log("sdfdf");
+connection.query("UPDATE product set Count = Count -" + count[i] + " where Count-" + count[i] + ">=0 and Name='" + name[i] + "';", function (err, result) {
+    if (result['changedRows'] == 1)
+      if (update_all(name, count, i + 1, max) == 1)
+        return 1;
+      else
+        return 0;
+    else
+      return 0;
+  });
+}
 app.post("/id", function (req, res) {
   var file = fs.readFileSync("info.json", "utf8");
   file = JSON.parse(file);
@@ -87,7 +108,7 @@ app.post("/id", function (req, res) {
       res.send({ "id": parseInt(req.body.id) });
     }
     else
-    res.send({ "id": parseInt(req.body.id) });
+      res.send({ "id": parseInt(req.body.id) });
   }
 });
 app.post("/basket", function (req, res) {
@@ -101,8 +122,10 @@ app.post("/basket", function (req, res) {
           i.count = [];
         }
         if (!i.basket.includes(req.body.name)) {
-          i.basket.push(req.body.name);
-          i.count.push(req.body.count);
+          if (result[0]["Count"] > 0) {
+            i.basket.push(req.body.name);
+            i.count.push(req.body.count);
+          }
         }
         else
           if (i.count[i.basket.indexOf(req.body.name)] + req.body.count <= result[0]["Count"])
@@ -132,7 +155,7 @@ app.post("/update_basket", function (req, res) {
     file = JSON.parse(file);
     if (req.body.count < 0)
       req.body.count *= -1;
-    for (i of file)
+    for (i of file) {
       if (i.id == req.body.id && i.basket)
         if (req.body.method == 'add')
           if (req.body.count + i.count[i.basket.indexOf(req.body.name)] <= result[0]["Count"]) {
@@ -154,12 +177,10 @@ app.post("/update_basket", function (req, res) {
             i.basket.splice(i.basket.indexOf(req.body.name), 1);
             res.send(i);
           }
+    }
     console.log(file);
     fs.writeFileSync("info.json", JSON.stringify(file));
   });
-});
-app.post("/buy_all", function (req, res) {
-  console.log(req.body);
 });
 app.get("*", function (request, response) {
   response.send(request.url)
