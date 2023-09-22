@@ -58,7 +58,7 @@
 				onchange="update_count(<%=i.Id%>)" style="width:14vw" />
 			<button
 				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'
-				onclick="basket('<%=i.Name%>',<%=i.Id%>)">
+				onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">
 				<a href='/#'>В корзину</a>
 			</button>
 			<div align="center" style='margin:5px auto 0 auto;'>
@@ -82,25 +82,15 @@
 			xhr.open("POST", "/id", "true");
 			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 			xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
-			xhr.onload = function () {console.log("sdfsdfdf"); localStorage.setItem("id", JSON.parse(xhr.response).id); }
+			xhr.onload = function () {localStorage.setItem("id", JSON.parse(xhr.response).id); }
 			
 		}
 		a.href+='?id='+localStorage.getItem("id");
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", "/basket_user", "true");
-		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-		xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
-		xhr.onload = function () { start_basket(JSON.parse(xhr.response)) }
-		function basket(name, id) {
-			var input = document.getElementById(id);
-			if (parseInt(input.value) <= parseInt(input.max)) {
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "/basket", "true");
-				xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-				xhr.send(JSON.stringify({ "name": name, id: localStorage.getItem("id"), count: parseInt(input.value) }));
-				xhr.onload = function () { start_basket(JSON.parse(xhr.response)); };
-			}
-		}
+		var xhr2 = new XMLHttpRequest();
+		xhr2.open("POST", "/basket_user", "true");
+		xhr2.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+		xhr2.send(JSON.stringify({ "id": localStorage.getItem("id") }));
+		xhr2.onload = function () { start_basket(JSON.parse(xhr2.response)) }
 		function update_count(id) {
 			let input = document.getElementById(id);
 			if (parseInt(input.value) > parseInt(input.max))
@@ -118,8 +108,6 @@
 					"<input style='float:left;' type='number' max='" + i + "' name='count' id='basket_" + i + "' placeholder='Количество' style='width:14vw' />" +
 					"<button style='float:left;' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','add')\">Добавить</button>" +
 					"<div><p style='margin:0 auto;width:10vw;'>" + basket.count[basket.basket.indexOf(basket.basket[i])] + "</p></div></div>";
-
-
 			}
 		}
 		function update_basket(product_id, name, method) {
