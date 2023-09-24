@@ -40,32 +40,35 @@
 	<div class='main'>
 		<div id="popup"
 			style="width:30vw;height:30vh;position:fixed; background-color:gray;left:35vw;top:30vh;display:<%=display %>;">
-			<p><%= Id %></p>
+			<p>
+				<%= Id %>
+			</p>
 		</div>
 		<div id="basket_user"></div>
 		<button><a id="a_buy_all" href="/basket/buy">Купить всё</a></button>
 		<%for(i of Results){%>
-		<div class='card'>
-			<div align="center" style='width:50%; margin:0 auto;'>
-				<%=i.Name%>
+			<div class='card'>
+				<div align="center" style='width:50%; margin:0 auto;'>
+					<%=i.Name%>
+				</div>
+				<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/<%=i.Name%>'>img</a>
+				</div>
+				<button
+					style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'>
+					<a href='/<%=i.Name%>/buy'>Купить</a>
+				</button>
+				<input type="number" max="<%=i.Count%>" name="count" id="<%=i.Id%>" value="1" placeholder="Количество"
+					onchange="update_count(<%=i.Id%>)" style="width:14vw" />
+				<button
+					style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'
+					onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">
+					<a href='/#'>В корзину</a>
+				</button>
+				<div align="center" style='margin:5px auto 0 auto;'>
+					Осталось <%=i.Count%> штук(и)
+				</div>
 			</div>
-			<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/<%=i.Name%>'>img</a></div>
-			<button
-				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'>
-				<a href='/<%=i.Name%>/buy'>Купить</a>
-			</button>
-			<input type="number" max="<%=i.Count%>" name="count" id="<%=i.Id%>" placeholder="Количество"
-				onchange="update_count(<%=i.Id%>)" style="width:14vw" />
-			<button
-				style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'
-				onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">
-				<a href='/#'>В корзину</a>
-			</button>
-			<div align="center" style='margin:5px auto 0 auto;'>
-				Осталось <%=i.Count%> штук(и)
-			</div>
-		</div>
-		<%}%>
+			<%}%>
 	</div>
 	<script>
 		setTimeout(function () { document.getElementById("popup").style.display = "none"; }, 2000);
@@ -82,10 +85,10 @@
 			xhr.open("POST", "/id", "true");
 			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 			xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
-			xhr.onload = function () {localStorage.setItem("id", JSON.parse(xhr.response).id); }
-			
+			xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
+
 		}
-		a.href+='?id='+localStorage.getItem("id");
+		a.href += '?id=' + localStorage.getItem("id");
 		var xhr2 = new XMLHttpRequest();
 		xhr2.open("POST", "/basket_user", "true");
 		xhr2.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -93,6 +96,8 @@
 		xhr2.onload = function () { start_basket(JSON.parse(xhr2.response)) }
 		function update_count(id) {
 			let input = document.getElementById(id);
+			if (input.value = "")
+				input.value = 1;
 			if (parseInt(input.value) > parseInt(input.max))
 				input.value = input.max;
 			else if (parseInt(input.value) <= 0)

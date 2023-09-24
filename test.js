@@ -18,15 +18,16 @@ const connection = mysql.createConnection({
 function check_basket(results) {
   var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
   for (i of file)
-    for (j of results) {
-      let index = i.basket.indexOf(j.Name);
-      if (i.basket.includes(j.Name) && i.count[index] > j.Count)
-        i.count[index] = j.Count;
-      if (i.count[index] == 0) {
-        i.count.splice(index, 1);
-        i.basket.splice(index, 1);
+    for (j of results)
+      if (i.basket) {
+        let index = i.basket.indexOf(j.Name);
+        if (i.basket.includes(j.Name) && i.count[index] > j.Count)
+          i.count[index] = j.Count;
+        if (i.count[index] == 0) {
+          i.count.splice(index, 1);
+          i.basket.splice(index, 1);
+        }
       }
-    }
   fs.writeFileSync("info.json", JSON.stringify(file));
   return file;
 }
@@ -68,7 +69,7 @@ app.post("/purchased", function (req, res) {
     if (response['changedRows'] == 1)
       connection.query("select max(Order_id) from buyers;", function (err, result) {
         console.log(result);
-        if (result[0]['max(Order_id)'] ==null)
+        if (result[0]['max(Order_id)'] == null)
           connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + ",0);", function (err, results) {
             res.redirect("/?res=Ваш номер заказа 0. Вам выслано электронное письмо на почту.");
           });
@@ -83,23 +84,43 @@ app.post("/purchased", function (req, res) {
 });
 app.post("/purchased_all", function (req, res) {
   connection.query(select_product + ";", function (err, results) {
-    count = true;
+    let count = true;
+    let index = 0;
+    var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
     for (i of results)
-      for (j = 0; j < req.body.name.length; j++)
-        if (i["Name"] == req.body.name[j])
-          if (i["Count"] - req.body.count[j] < 0)
+      for (j of file) {
+        if (j.id == req.body.id) {
+          index = j.id;
+          if (j.basket.includes(i["Name"]) && i["Count"] - j.count[j.basket.indexOf(i["Name"])] < 0)
             count = false;
-    if (count == true) {
-      for (i = 0; i < req.body.name.length; i++)
-        connection.query("UPDATE product set Count = Count -" + req.body.count[i] + " where Count-" + req.body.count[i] + ">=0 and Name='" + req.body.name[i] + "';");
-      let sql = "insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ";
-      for (i = 0; i < req.body.name.length; i++) {
-        sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name[i] + "'," + req.body.count[i] + ")";
-        if (i < req.body.name.length - 1)
-          sql += ",";
+        }
       }
-      sql += ";";
-      connection.query(sql);
+    if (count == true) {
+      connection.query("select max(Order_id) from buyers;", function (err, result) {
+        for (i of file)
+          if (i.id == req.body.id) {
+            for (j = 0; j < i.basket.length; j++)
+              connection.query("UPDATE product set Count = Count -" + i.count[j] + " where Count-" + i.count[j] + ">=0 and Name='" + i.basket[j] + "';");
+            let sql = "insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ";
+            for (j = 0; j < i.basket.length; j++) {
+              if (result[0]['max(Order_id)'] == null)
+                sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + i.basket[j] + "'," + i.count[j] + ",0)";
+              else
+                sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + i.basket[j] + "'," + i.count[j] + "," + parseInt(result[0]['max(Order_id)'] + 1) + ")";
+              if (j < i.basket.length - 1)
+                sql += ",";
+            }
+            sql += ";";
+            connection.query(sql);
+            i.basket = [];
+            i.count = [];
+          }
+        fs.writeFileSync("info.json", JSON.stringify(file));
+        if (result[0]['max(Order_id)'] == null)
+          res.redirect("/?res=Ваш номер заказа 0. Вам выслано электронное письмо на почту.");
+        else
+          res.redirect("/?res=Ваш номер заказа " + parseInt(result[0]['max(Order_id)'] + 1) + ". Вам выслано электронное письмо на почту.");
+      });
     }
   });
 });
@@ -133,12 +154,12 @@ app.post("/update_basket", function (req, res) {
     if (req.body.count < 0)
       req.body.count *= -1;
     for (i of file) {
-      let index = i.basket.indexOf(req.body.name);
       if (i.id == req.body.id) {
         if (i.basket === undefined) {
           i.basket = [];
           i.count = [];
         }
+        let index = i.basket.indexOf(req.body.name);
         if (!i.basket.includes(req.body.name)) {
           if (result[0]["Count"] - req.body.count >= 0) {
             i.basket.push(req.body.name);

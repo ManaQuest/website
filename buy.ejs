@@ -81,8 +81,13 @@
 								<input type="hidden" name="name" value="<%=Results.basket[i]%>" />
 								<input type="hidden" name="count" value="<%=Results.count[i]%>" />
 								<%}%>
+								<input type="hidden" name="id" id="Id" value="" />
 					</form>
 				</div>
 				<%}%>
+				<script>
+					var input=document.getElementById("Id");
+					input.value=localStorage.getItem("id");
+				</script>
 </body>
 </html>
