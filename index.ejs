@@ -12,7 +12,7 @@
 		}
 
 		.card {
-			width: 15vw;
+			width: 20vw;
 			margin: 0 auto;
 			border: solid #000000 1px;
 		}
@@ -24,6 +24,31 @@
 			width: 100%;
 			height: 100%;
 		}
+
+		.container {
+			margin: 0 auto;
+			width: 50vw;
+			height: 5vw;
+		}
+
+		.container a {
+			float: left;
+			width: 12.5vw;
+			height: auto;
+			margin: 2vw 0 2vw 0;
+		}
+
+		.buy {
+			border: 1px solid transparent;
+			background-color: #ad1a1a;
+			margin: 5px auto 0 auto;
+			display: block;
+			font-size: 3vw;
+		}
+		.basket{
+float:left;
+width: 15vw;
+		}
 	</style>
 </head>
 
@@ -33,10 +58,18 @@
 		<div>
 			<p>Магазин</p>
 		</div>
+		<div class="container">
+			<a>Оплата</a>
+			<a>Доставка</a>
+			<a>О магазине</a>
+			<a>Контакты</a>
+		</div>
 		<div>
 			<p>Товары</p>
 		</div>
 	</div>
+	<div id="basket_user"></div>
+	<button id="but" style="display:none; margin:0 auto;"><a id="a_buy_all" href="/basket/buy">Купить всё</a></button>
 	<div class='main'>
 		<div id="popup"
 			style="width:30vw;height:30vh;position:fixed; background-color:gray;left:35vw;top:30vh;display:<%=display %>;">
@@ -44,8 +77,6 @@
 				<%= Id %>
 			</p>
 		</div>
-		<div id="basket_user"></div>
-		<button><a id="a_buy_all" href="/basket/buy">Купить всё</a></button>
 		<%for(i of Results){%>
 			<div class='card'>
 				<div align="center" style='width:50%; margin:0 auto;'>
@@ -53,14 +84,12 @@
 				</div>
 				<div style='height:100px; background-color:#808080; margin:5px 0 0 0;'><a href='/<%=i.Name%>'>img</a>
 				</div>
-				<button
-					style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'>
+				<button class="buy">
 					<a href='/<%=i.Name%>/buy'>Купить</a>
 				</button>
 				<input type="number" max="<%=i.Count%>" name="count" id="<%=i.Id%>" value="1" placeholder="Количество"
-					onchange="update_count(<%=i.Id%>)" style="width:14vw" />
-				<button
-					style='border:1px solid transparent; background-color:#ad1a1a;margin:5px auto 0 auto; display:block; font-size:3vw;'
+					onchange="update_count(<%=i.Id%>)" style="width:95%" />
+				<button class="buy"
 					onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">
 					<a href='/#'>В корзину</a>
 				</button>
@@ -71,8 +100,12 @@
 			<%}%>
 	</div>
 	<script>
-		setTimeout(function () { document.getElementById("popup").style.display = "none"; }, 2000);
+		if (localStorage.getItem("show") == "false")
+			setTimeout(function () { document.getElementById("popup").style.display = "none"; localStorage.setItem("show", "true") }, 2000);
+		else
+			document.getElementById("popup").style.display = "none";
 		let a = document.getElementById("a_buy_all");
+		let but = document.getElementById("but");
 		if (localStorage.getItem("id") == null) {
 			var xhr = new XMLHttpRequest();
 			xhr.open("POST", "/id", "true");
@@ -107,13 +140,18 @@
 		function start_basket(basket) {
 			var con = document.getElementById("basket_user");
 			con.innerHTML = '';
-			for (let i = 0; i < basket.basket.length; i++) {
-				con.innerHTML += "<div><div><p style='margin:0 auto;width:10vw;'>" + basket.basket[i] + "</p></div>" +
-					"<button style='float:left;' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','delete')\">Удалить</button>" +
-					"<input style='float:left;' type='number' max='" + i + "' name='count' id='basket_" + i + "' placeholder='Количество' style='width:14vw' />" +
-					"<button style='float:left;' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','add')\">Добавить</button>" +
-					"<div><p style='margin:0 auto;width:10vw;'>" + basket.count[basket.basket.indexOf(basket.basket[i])] + "</p></div></div>";
-			}
+			if (basket.basket)
+				for (let i = 0; i < basket.basket.length; i++) {
+					con.innerHTML += "<div><div><p style='margin:0 auto;width:10vw;'>" + basket.basket[i] + "</p></div>" +
+						"<div style='width:45vw; margin:0 auto;'><button class='basket' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','delete')\">Удалить</button>" +
+						"<input class='basket' type='number' max='" + basket.count[i] + "' name='count' id='basket_" + i + "' placeholder='Количество' style='width:14vw' />" +
+						"<button class='basket' onclick=\"update_basket('basket_" + i + "','" + basket.basket[i] + "','add')\">Добавить</button></div>" +
+						"<div><p style='margin:0 auto;width:10vw;'>" + basket.count[basket.basket.indexOf(basket.basket[i])] + "</p></div></div>";
+				}
+			if (basket.basket && basket.basket.length > 0)
+				but.style.display = "block";
+			else if (basket.basket && basket.basket.length == 0)
+				but.style.display = "none";
 		}
 		function update_basket(product_id, name, method) {
 			var xhr = new XMLHttpRequest();

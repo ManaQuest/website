@@ -59,7 +59,7 @@
 
 		<%if(multi==false){%>
 			<div style="margin:0 auto;">
-				<form method="post" name="forma" action="/purchased">
+				<form method="post" name="forma" action="/purchased" onsubmit="purchased()">
 					<input type="text" name="first_name" placeholder="Имя" required />
 					<input type="text" name="last_name" placeholder="Фамилия" required />
 					<input type="email" name="email" placeholder="email" required />
@@ -67,11 +67,12 @@
 					<input type="number" max="<%=Results[0].Count%>" name="count" placeholder="Количество" />
 					<input type="submit" name="button" value="Купить" required />
 					<input type="hidden" name="name" value="<%=Results[0].Name%>" />
+					<input type="hidden" name="id" id="Id" value="" />
 				</form>
 			</div>
 			<%}else{%>
 				<div style="margin:0 auto;">
-					<form method="post" name="forma" action="/purchased_all">
+					<form method="post" name="forma" action="/purchased_all" onsubmit="purchased()">
 						<input type="text" name="first_name" placeholder="Имя" required />
 						<input type="text" name="last_name" placeholder="Фамилия" required />
 						<input type="email" name="email" placeholder="email" required />
@@ -88,6 +89,9 @@
 				<script>
 					var input=document.getElementById("Id");
 					input.value=localStorage.getItem("id");
+					function purchased(){
+						localStorage.setItem("show","false");
+					}
 				</script>
 </body>
 </html>

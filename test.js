@@ -39,8 +39,10 @@ app.get('/', function (req, res) {
       else {
         if (!req.query.res)
           res.render(__dirname + '/index.ejs', { Results: results, display: 'none', Id: "" });
-        else
-          res.render(__dirname + '/index.ejs', { Results: results, display: 'block', Id: req.query.res });
+        else if (req.query.res >= 0)
+          res.render(__dirname + '/index.ejs', { Results: results, display: 'block', Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
+        else if (req.query.res == -1)
+          res.render(__dirname + '/index.ejs', { Results: results, display: 'block', Id: "Нужного количества товара не осталось." });
       }
     });
 });
@@ -68,18 +70,17 @@ app.post("/purchased", function (req, res) {
   connection.query("UPDATE product set Count = Count -" + req.body.count + " where Count-" + req.body.count + ">=0 and Name='" + req.body.name + "';", function (request, response) {
     if (response['changedRows'] == 1)
       connection.query("select max(Order_id) from buyers;", function (err, result) {
-        console.log(result);
         if (result[0]['max(Order_id)'] == null)
           connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + ",0);", function (err, results) {
-            res.redirect("/?res=Ваш номер заказа 0. Вам выслано электронное письмо на почту.");
+            res.redirect("/?res=0");
           });
         else
           connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + "," + parseInt(result[0]['max(Order_id)'] + 1) + ");", function (err, results) {
-            res.redirect("/?res=Ваш номер заказа " + parseInt(result[0]['max(Order_id)'] + 1) + ". Вам выслано электронное письмо на почту.");
+            res.redirect("/?res="+parseInt(result[0]['max(Order_id)'] + 1) );
           });
       });
     else
-      res.redirect("/?res=Нужного количества товара не осталось.");
+      res.redirect("/?res=-1");
   });
 });
 app.post("/purchased_all", function (req, res) {
@@ -117,9 +118,9 @@ app.post("/purchased_all", function (req, res) {
           }
         fs.writeFileSync("info.json", JSON.stringify(file));
         if (result[0]['max(Order_id)'] == null)
-          res.redirect("/?res=Ваш номер заказа 0. Вам выслано электронное письмо на почту.");
+          res.redirect("/?res=0");
         else
-          res.redirect("/?res=Ваш номер заказа " + parseInt(result[0]['max(Order_id)'] + 1) + ". Вам выслано электронное письмо на почту.");
+          res.redirect("/?res=" + parseInt(result[0]['max(Order_id)'] + 1));
       });
     }
   });
