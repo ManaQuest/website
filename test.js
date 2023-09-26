@@ -8,6 +8,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 var select_product = "select * from product";
 
+
+
 const connection = mysql.createConnection({
   host: "localhost",
   port: "3030",
@@ -21,7 +23,7 @@ function check_basket(results) {
     for (j of results)
       if (i.basket) {
         let index = i.basket.indexOf(j.Name);
-        if (i.basket.includes(j.Name) && i.count[index] > j.Count)
+        if (index>=0 && i.count[index] > j.Count)
           i.count[index] = j.Count;
         if (i.count[index] == 0) {
           i.count.splice(index, 1);
@@ -76,7 +78,7 @@ app.post("/purchased", function (req, res) {
           });
         else
           connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + "," + parseInt(result[0]['max(Order_id)'] + 1) + ");", function (err, results) {
-            res.redirect("/?res="+parseInt(result[0]['max(Order_id)'] + 1) );
+            res.redirect("/?res=" + parseInt(result[0]['max(Order_id)'] + 1));
           });
       });
     else
@@ -86,12 +88,10 @@ app.post("/purchased", function (req, res) {
 app.post("/purchased_all", function (req, res) {
   connection.query(select_product + ";", function (err, results) {
     let count = true;
-    let index = 0;
     var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
     for (i of results)
       for (j of file) {
         if (j.id == req.body.id) {
-          index = j.id;
           if (j.basket.includes(i["Name"]) && i["Count"] - j.count[j.basket.indexOf(i["Name"])] < 0)
             count = false;
         }
