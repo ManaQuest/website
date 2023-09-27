@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Магазин</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .text {
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .card {
+            width: 20vw;
+            margin: 3vw auto 0 auto;
+            background-color: #872720;
+            padding: 1em 0 1em 0;
+        }
+
+        .card p:first-child {
+            margin-top: 0;
+            background-color: #872720;
+        }
+
+        .buy {
+            text-decoration: none;
+            margin: 0.5vw 0 0 0;
+            display: block;
+        }
+
+        .buy button {
+            width: 15vw;
+            height: 3vw;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <img src="" style="width:15vw; height: 15vw; margin:0 auto; display:block;" />
+    </div>
+    <div style="margin:3vw auto 0 auto;">
+        <p class="text">Магазин</p>
+    </div>
+    <div style="margin:3vw auto 0 auto;">
+        <p class="text">Товары</p>
+    </div>
+    <!--Общий контейнер для товаров-->
+    <div>
+        <div class="card">
+            <p class="text">Карты</p>
+            <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
+            <p class="text" style="font-size: 1.5vw;">Осталось 10 штук</p>
+            <div style="width: 13vw; height: 3vw; margin:0 auto;">
+                <button style="float:left;width:3vw; height: 3vw;">-</button>
+                <input type="number" style="width: 7vw; text-align: center; height: 3vw;" />
+                <button style="float:right;width:3vw; height: 3vw;">+</button>
+            </div>
+
+            <a href="/purshared" class="buy">
+                <button>Купить</button>
+            </a>
+            <a href="/purshared" class="buy">
+                <button>В корзину</button>
+            </a>
+        </div>
+        <div class="card">
+            <p class="text">Карты</p>
+            <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
+            <p class="text" style="font-size: 1.5vw;">Осталось 10 штук</p>
+            <div style="width: 13vw; height: 3vw; margin:0 auto;">
+                <button style="float:left;width:3vw; height: 3vw;">-</button>
+                <input type="number" style="width: 7vw; text-align: center; height: 3vw;" />
+                <button style="float:right;width:3vw; height: 3vw;">+</button>
+            </div>
+
+            <a href="/purshared" class="buy">
+                <button>Купить</button>
+            </a>
+            <a href="/purshared" class="buy">
+                <button>В корзину</button>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
