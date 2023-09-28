@@ -10,11 +10,6 @@
             box-sizing: border-box;
         }
 
-        .text {
-            text-align: center;
-            font-size: 2vw;
-        }
-
         .card {
             width: 20vw;
             margin: 3vw auto 0 auto;
@@ -27,10 +22,58 @@
             background-color: #872720;
         }
 
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        body {
+            background-color: #04015e;
+            margin: 0;
+        }
+
+        .text {
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .block {
+            margin: 3vw auto 0 auto;
+        }
+
+        .block button {
+            background-color: #ad1a1a;
+            border: none;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .footer:first-child {
+            width: 20vw;
+            float: left;
+            font-size: 1.5vw;
+        }
+
+        .footer:last-child {
+            width: 20vw;
+            float: right;
+            font-size: 1.5vw;
+        }
+
+        .footer a {
+            display: block;
+            text-align: center;
+        }
+
+        .footer p {
+            text-align: center;
+        }
+
         .buy {
             text-decoration: none;
-            margin: 0.5vw 0 0 0;
+            margin: 0.5vw auto 0 auto;
             display: block;
+            width: 15vw;
         }
 
         .buy button {
@@ -39,6 +82,17 @@
             display: block;
             margin: 0 auto;
         }
+
+        .form {
+            width: 20vw;
+            margin: 1vw auto 0 auto;
+        }
+
+        .form input {
+            margin: 0.5vw auto 0 auto;
+            display:block;
+            width: 20vw;
+        }
     </style>
 </head>
 
@@ -46,13 +100,12 @@
     <div>
         <img src="" style="width:15vw; height: 15vw; margin:0 auto; display:block;" />
     </div>
-    <div style="margin:3vw auto 0 auto;">
-        <p class="text">Магазин</p>
+    <div class="block">
+        <h1 class="text" style="color: #a10202;">Магазин</h1>
     </div>
-    <div style="margin:3vw auto 0 auto;">
-        <p class="text">Корзина</p>
+    <div class="block">
+        <p class="text" style="color: #ad1a1a;">Корзина</p>
     </div>
-    <!--Общий контейнер для товаров-->
     <div>
         <div class="card">
             <p class="text">Карты</p>
@@ -79,6 +132,30 @@
         <a href="/purshared" class="buy">
             <button>Купить всё</button>
         </a>
+    </div>
+    <div>
+        <form class="form">
+            <input type="text" />
+            <input type="text" />
+            <input type="email" />
+            <input type="text" />
+            <input type="submit"/>
+        </form>
+    </div>
+    <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
+        <div class="footer">
+            <p><b>Магазин</b></p>
+            <a>Доставка</a>
+            <a>Оплата</a>
+            <a>Контакты</a>
+            <a>О магазине</a>
+        </div>
+        <div class="footer">
+            <p><b>Соц. сети</b></p>
+            <a>YouTube</a>
+            <a>Telegram</a>
+            <a>Email</a>
+        </div>
     </div>
 </body>
 
