@@ -152,8 +152,7 @@ app.post("/basket_user", function (req, res) {
 app.post("/update_basket", function (req, res) {
   connection.query(select_product + " where Name='" + req.body.name + "';", function (err, result) {
     var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
-    if (req.body.count < 0)
-      req.body.count *= -1;
+    req.body.count=Math.abs(req.body.count);
     for (i of file) {
       if (i.id == req.body.id) {
         if (i.basket === undefined) {
@@ -161,7 +160,8 @@ app.post("/update_basket", function (req, res) {
           i.count = [];
         }
         let index = i.basket.indexOf(req.body.name);
-        if (!i.basket.includes(req.body.name)) {
+        console.log(index);
+        if (index==-1) {
           if (result[0]["Count"] - req.body.count >= 0) {
             i.basket.push(req.body.name);
             i.count.push(req.body.count);

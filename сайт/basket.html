@@ -84,14 +84,34 @@
         }
 
         .form {
-            width: 20vw;
-            margin: 1vw auto 0 auto;
+            width: 30vw;
+            margin: 0 auto;
         }
 
         .form input {
             margin: 0.5vw auto 0 auto;
-            display:block;
-            width: 20vw;
+            display: block;
+            width: 30vw;
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .form input:first-child {
+            margin: 2vw auto 0 auto;
+            display: block;
+            width: 30vw;
+            text-align: center;
+            font-size: 2vw;
+        }
+        .form input:last-child {
+            margin: 0.5vw auto 2vw auto;
+            display: block;
+            width: 30vw;
+            text-align: center;
+            font-size: 2vw;
+        }
+        .form ::placeholder {
+            text-align: center;
         }
     </style>
 </head>
@@ -133,13 +153,13 @@
             <button>Купить всё</button>
         </a>
     </div>
-    <div>
+    <div style="position:fixed; width:35vw; top:15vw; left:0;right:0;margin:0 auto; background-color: aqua;">
         <form class="form">
-            <input type="text" />
-            <input type="text" />
-            <input type="email" />
-            <input type="text" />
-            <input type="submit"/>
+            <input type="text" placeholder="Имя" />
+            <input type="text" placeholder="Фамилия" />
+            <input type="email" placeholder="Email" />
+            <input type="text" placeholder="Адрес доставки" />
+            <input type="submit" />
         </form>
     </div>
     <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
