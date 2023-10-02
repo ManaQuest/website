@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Магазин</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .card {
+            width: 20vw;
+            margin: 3vw auto 0 auto;
+            background-color: #872720;
+            padding: 1em 0 1em 0;
+        }
+
+        .card p:first-child {
+            margin-top: 0;
+            background-color: #872720;
+        }
+
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        body {
+            background-color: #04015e;
+            margin: 0;
+        }
+
+        .text {
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .block {
+            margin: 3vw auto 0 auto;
+        }
+
+        .block button {
+            background-color: #ad1a1a;
+            border: none;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .footer:first-child {
+            width: 20vw;
+            float: left;
+            font-size: 1.5vw;
+            text-align: center;
+        }
+
+        .footer:last-child {
+            width: 20vw;
+            float: right;
+            font-size: 1.5vw;
+            text-align: center;
+        }
+
+        .footer a {
+            display: block; 
+        }
+
+        .buy {
+            text-decoration: none;
+            margin: 0.5vw 0 0 0;
+            display: block;
+        }
+
+        .buy button {
+            width: 15vw;
+            height: 3vw;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <img src="" style="width:15vw; height: 15vw; margin:0 auto; display:block;" />
+    </div>
+    <div class="block">
+        <h1 class="text" style="color: #a10202;">Магазин</h1>
+    </div>
+    <div class="block">
+        <p class="text" style="color: #ad1a1a;">Товары</p>
+    </div>
+    <div>
+        <% for(i of Results) {%>
+            <div class="card">
+                <p class="text">
+                    <%=i.Name%>
+                </p>
+                <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
+                <p class="text" style="font-size: 1.5vw;">Осталось <%=i.Count%> штук</p>
+                <div style="width: 13vw; height: 3vw; margin:0 auto;">
+                    <button style="float:left;width:3vw; height: 3vw;" onclick="change(<%=i.Id%>,'delete')">-</button>
+                    <input type="number" max="<%=i.Count%>" id="<%=i.Id%>" value="1" onchange="check(<%=i.Id%>)"
+                        style="width: 7vw; text-align: center; height: 3vw;" />
+                    <button style="float:right;width:3vw; height: 3vw;" onclick="change(<%=i.Id%>,'add')">+</button>
+                </div>
+
+                <a href="/purshared" class="buy">
+                    <button>Купить</button>
+                </a>
+                    <button style="width: 15vw;
+                    height: 3vw;
+                    display: block;
+                    margin: 0.5vw auto 0 auto;" onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">В корзину</button>
+            </div>
+            <% } %>
+    </div>
+    <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
+        <div class="footer">
+            <p><b>Магазин</b></p>
+            <a>Доставка</a>
+            <a>Оплата</a>
+            <a>Контакты</a>
+            <a>О магазине</a>
+        </div>
+        <div class="footer">
+            <p><b>Соц. сети</b></p>
+            <a>YouTube</a>
+            <a>Telegram</a>
+            <a>Email</a>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+    <script>
+        function change(id, method) {
+            var input = document.getElementById(id);
+            if (method == 'add') {
+                if (parseInt(input.value) < parseInt(input.max))
+                    input.value = parseInt(input.value) + 1;
+            }
+            else
+                if (input.value > 1)
+                    input.value = parseInt(input.value) - 1;
+        }
+        function check(id) {
+            var input = document.getElementById(id);
+            if (parseInt(input.value) > parseInt(input.max))
+                input.value = parseInt(input.max);
+            else if (parseInt(input.value) <= 0)
+                input.value = 1;
+        }
+        function update_basket(id,name,method){
+            var xhr = new XMLHttpRequest();
+			let input = document.getElementById(id);
+			xhr.open("POST", "/update_basket", "true");
+			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+			xhr.send(JSON.stringify({ "name": name, id: localStorage.getItem("id"), "count": parseInt(input.value), "method": method }));
+        }
+    </script>
+</body>
+
+</html>

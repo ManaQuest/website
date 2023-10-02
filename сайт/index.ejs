@@ -40,21 +40,18 @@
             width: 20vw;
             float: left;
             font-size: 1.5vw;
+            text-align: center;
         }
 
         .footer:last-child {
             width: 20vw;
             float: right;
             font-size: 1.5vw;
+            text-align: center;
         }
 
         .footer a {
             display: block;
-            text-align: center;
-        }
-
-        .footer p {
-            text-align: center;
         }
     </style>
 </head>
@@ -66,19 +63,21 @@
     <div class="block">
         <h1 class="text" style="color: #a10202;">Магазин</h1>
     </div>
-    <div class="block">
-        <button>
-            <a href="./basket.html" style="display: block;padding: 1em 0 1em 0;">
-                <p class="text" style="margin-top: 0;margin-bottom: 0;">Корзина</p>
-            </a>
-        </button>
-    </div>
-    <div class="block">
-        <button>
-            <a href="./item.html" style="display: block;padding: 1em 0 1em 0;">
-                <p class="text" style="margin-top: 0;margin-bottom: 0;">Товары</p>
-            </a>
-        </button>
+    <div class="container">
+        <div class="block">
+            <button>
+                <a href="/basket?id=" id="a_basket" style="display: block;padding: 1em 0 1em 0;">
+                    <p class="text" style="margin-top: 0;margin-bottom: 0;">Корзина</p>
+                </a>
+            </button>
+        </div>
+        <div class="block">
+            <button>
+                <a href="/shop" style="display: block;padding: 1em 0 1em 0;">
+                    <p class="text" style="margin-top: 0;margin-bottom: 0;">Товары</p>
+                </a>
+            </button>
+        </div>
     </div>
     <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
         <div class="footer">
@@ -95,12 +94,10 @@
             <a>Email</a>
         </div>
     </div>
+    <script src="./script.js"></script>
     <script>
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/id", "true");
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
-        xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
+        var a=document.getElementById("a_basket");
+        a.href+=localStorage.getItem("id");
     </script>
 </body>
 

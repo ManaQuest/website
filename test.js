@@ -23,7 +23,7 @@ function check_basket(results) {
     for (j of results)
       if (i.basket) {
         let index = i.basket.indexOf(j.Name);
-        if (index>=0 && i.count[index] > j.Count)
+        if (index >= 0 && i.count[index] > j.Count)
           i.count[index] = j.Count;
         if (i.count[index] == 0) {
           i.count.splice(index, 1);
@@ -34,19 +34,33 @@ function check_basket(results) {
   return file;
 }
 app.get('/', function (req, res) {
+  if (!req.query.res)
+    res.render(__dirname + '/сайт/index.ejs');
+  else if (req.query.res >= 0)
+    res.render(__dirname + '/сайт/index.ejs', { Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
+  else if (req.query.res == -1)
+    res.render(__dirname + '/сайт/index.ejs', { Id: "Нужного количества товара не осталось." });
+});
+app.get('/shop', function (req, res) {
   connection.query(select_product + ";",
     function (err, results) {
       check_basket(results);
       if (err) console.log(err);
-      else {
-        if (!req.query.res)
-          res.render(__dirname + '/index.ejs', { Results: results, display: 'none', Id: "" });
-        else if (req.query.res >= 0)
-          res.render(__dirname + '/index.ejs', { Results: results, display: 'block', Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
-        else if (req.query.res == -1)
-          res.render(__dirname + '/index.ejs', { Results: results, display: 'block', Id: "Нужного количества товара не осталось." });
-      }
+      else
+        res.render(__dirname + '/сайт/item.ejs', { Results: results });
     });
+});
+app.get('/basket', function (req, res) {
+  connection.query(select_product + ";", function (err, results) {
+    var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
+    for (i of file) {
+      if (i.id == parseInt(req.query.id)) {
+        res.render(__dirname + '/сайт/basket.ejs', { Results: i, res: results });
+        return;
+      }
+    }
+    res.render(__dirname + '/сайт/basket.ejs', {});
+  });
 });
 app.get("/basket/buy", function (req, res) {
   connection.query(select_product + ";",
@@ -127,7 +141,7 @@ app.post("/purchased_all", function (req, res) {
 });
 app.post("/id", function (req, res) {
   var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
-  if (req.body.id == -1) {
+  if (req.body.id == null) {
     file.push({ "id": file.length });
     fs.writeFileSync("info.json", JSON.stringify(file));
     res.send({ "id": file.length - 1 });
@@ -152,7 +166,7 @@ app.post("/basket_user", function (req, res) {
 app.post("/update_basket", function (req, res) {
   connection.query(select_product + " where Name='" + req.body.name + "';", function (err, result) {
     var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
-    req.body.count=Math.abs(req.body.count);
+    req.body.count = Math.abs(req.body.count);
     for (i of file) {
       if (i.id == req.body.id) {
         if (i.basket === undefined) {
@@ -160,8 +174,7 @@ app.post("/update_basket", function (req, res) {
           i.count = [];
         }
         let index = i.basket.indexOf(req.body.name);
-        console.log(index);
-        if (index==-1) {
+        if (index == -1) {
           if (result[0]["Count"] - req.body.count >= 0) {
             i.basket.push(req.body.name);
             i.count.push(req.body.count);

@@ -16,11 +16,11 @@
             background-color: #872720;
             padding: 1em 0 1em 0;
         }
+
         .card p:first-child {
             margin-top: 0;
             background-color: #872720;
         }
-
 
         a {
             text-decoration: none;
@@ -71,8 +71,9 @@
 
         .buy {
             text-decoration: none;
-            margin: 0.5vw 0 0 0;
+            margin: 0.5vw auto 0 auto;
             display: block;
+            width: 15vw;
         }
 
         .buy button {
@@ -80,6 +81,46 @@
             height: 3vw;
             display: block;
             margin: 0 auto;
+        }
+
+        .form {
+            width: 30vw;
+            margin: 0 auto;
+        }
+
+        .form input {
+            margin: 0.5vw auto 0 auto;
+            display: block;
+            width: 30vw;
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .form input:first-child {
+            margin: 1vw auto 0 auto;
+            display: block;
+            width: 30vw;
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .form input:last-child {
+            margin: 0.5vw auto 1vw auto;
+            display: block;
+            width: 30vw;
+            text-align: center;
+            font-size: 2vw;
+        }
+
+        .form ::placeholder {
+            text-align: center;
+        }
+
+        .submit {
+            background-color: #ad1a1a;
+            border: none;
+            margin: 0 auto;
+            display: block;
         }
     </style>
 </head>
@@ -92,43 +133,29 @@
         <h1 class="text" style="color: #a10202;">Магазин</h1>
     </div>
     <div class="block">
-        <p class="text" style="color: #ad1a1a;">Товары</p>
+        <p class="text" style="color: #ad1a1a;">Корзина</p>
     </div>
     <div>
         <div class="card">
             <p class="text">Карты</p>
             <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
-            <p class="text" style="font-size: 1.5vw;">Осталось 10 штук</p>
-            <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                <button style="float:left;width:3vw; height: 3vw;">-</button>
-                <input type="number" style="width: 7vw; text-align: center; height: 3vw;" />
-                <button style="float:right;width:3vw; height: 3vw;">+</button>
-            </div>
-
-            <a href="/purshared" class="buy">
-                <button>Купить</button>
-            </a>
-            <a href="/purshared" class="buy">
-                <button>В корзину</button>
-            </a>
+            <p class="text" style="margin-bottom: 0;">10 штук</p>
         </div>
         <div class="card">
             <p class="text">Карты</p>
             <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
-            <p class="text" style="font-size: 1.5vw;">Осталось 10 штук</p>
-            <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                <button style="float:left;width:3vw; height: 3vw;">-</button>
-                <input type="number" style="width: 7vw; text-align: center; height: 3vw;" />
-                <button style="float:right;width:3vw; height: 3vw;">+</button>
-            </div>
-
-            <a href="/purshared" class="buy">
-                <button>Купить</button>
-            </a>
-            <a href="/purshared" class="buy">
-                <button>В корзину</button>
-            </a>
+            <p class="text" style="margin-bottom: 0;">10 штук</p>
         </div>
+    </div>
+    <div id="forma"
+        style="width:35vw;margin:1vw auto 0 auto; background-color: #391e94; padding: 1vw 0 1vw 0;">
+        <form class="form">
+            <input type="text" placeholder="Имя" />
+            <input type="text" placeholder="Фамилия" />
+            <input type="email" placeholder="Email" />
+            <input type="text" placeholder="Адрес доставки" />
+            <input type="submit" value="Купить" class="submit" />
+        </form>
     </div>
     <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
         <div class="footer">
@@ -145,6 +172,16 @@
             <a>Email</a>
         </div>
     </div>
+    <script>
+        function show() {
+            var form = document.querySelector("#forma");
+            form.style["display"] = 'block';
+        }
+        function hide() {
+            var form = document.querySelector("#forma");
+            form.style["display"] = 'none';
+        }
+    </script>
 </body>
 
 </html>

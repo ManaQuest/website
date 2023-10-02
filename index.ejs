@@ -107,21 +107,11 @@
 			document.getElementById("popup").style.display = "none";
 		let a = document.getElementById("a_buy_all");
 		let but = document.getElementById("but");
-		if (localStorage.getItem("id") == null) {
-			var xhr = new XMLHttpRequest();
-			xhr.open("POST", "/id", "true");
-			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-			xhr.send(JSON.stringify({ "id": -1 }));
-			xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
-		}
-		else {
-			var xhr = new XMLHttpRequest();
-			xhr.open("POST", "/id", "true");
-			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-			xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
-			xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
-
-		}
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", "/id", "true");
+		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+		xhr.send(JSON.stringify({ "id": localStorage.getItem("id") }));
+		xhr.onload = function () { localStorage.setItem("id", JSON.parse(xhr.response).id); }
 		a.href += '?id=' + localStorage.getItem("id");
 		var xhr2 = new XMLHttpRequest();
 		xhr2.open("POST", "/basket_user", "true");
