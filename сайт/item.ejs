@@ -64,7 +64,7 @@
         }
 
         .footer a {
-            display: block; 
+            display: block;
         }
 
         .buy {
@@ -110,10 +110,11 @@
                 <a href="/purshared" class="buy">
                     <button>Купить</button>
                 </a>
-                    <button style="width: 15vw;
+                <button style="width: 15vw;
                     height: 3vw;
                     display: block;
-                    margin: 0.5vw auto 0 auto;" onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">В корзину</button>
+                    margin: 0.5vw auto 0 auto;" onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">В
+                    корзину</button>
             </div>
             <% } %>
     </div>
@@ -132,7 +133,6 @@
             <a>Email</a>
         </div>
     </div>
-    <script src="./script.js"></script>
     <script>
         function change(id, method) {
             var input = document.getElementById(id);
@@ -151,12 +151,33 @@
             else if (parseInt(input.value) <= 0)
                 input.value = 1;
         }
-        function update_basket(id,name,method){
-            var xhr = new XMLHttpRequest();
-			let input = document.getElementById(id);
-			xhr.open("POST", "/update_basket", "true");
-			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-			xhr.send(JSON.stringify({ "name": name, id: localStorage.getItem("id"), "count": parseInt(input.value), "method": method }));
+        function update_basket(id, name, method) {
+            let input = document.getElementById(id);
+            let cookie = parseCookie();
+            let change = false;
+            for (i of cookie)
+                if (i[0] == name) {
+                    change = true;
+                    if (method = "add") {
+                        if (parseInt(input.value) + parseInt(i[1]) <= input.max)
+                            document.cookie = `${name}=${parseInt(input.value) + parseInt(i[1])}`;
+                    }
+                    else
+                        if (parseInt(i[1]) - parseInt(input.value) >= 0)
+                            document.cookie = `${name}=${parseInt(i[1]) - parseInt(input.value)}`;
+                }
+            if (change == false)
+                document.cookie = `${name}=${parseInt(input.value)}`;
+        }
+        function parseCookie() {
+            let cookie = document.cookie.split("; ");
+            let cookie_arr = [];
+            for (i of cookie)
+                cookie_arr.push(i.split("="));
+            if (cookie_arr.length == 1 && cookie_arr[0] == '')
+                return [];
+            else
+                return cookie_arr;
         }
     </script>
 </body>

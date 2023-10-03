@@ -136,19 +136,23 @@
         <p class="text" style="color: #ad1a1a;">Корзина</p>
     </div>
     <div>
-        <% for(i of res){ %>
-            <% if(Results.basket[Results.basket.indexOf(i.Name)]==i.Name) {%>
-        <div class="card">
-            <p class="text"><%=Results.basket[Results.basket.indexOf(i.Name)]%></p>
-            <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
-            <p class="text" style="font-size: 1.5vw;">Осталось <%=i.Count%> штук</p>
-            <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                <button style="float:left;width:3vw; height: 3vw;">-</button>
-                <input type="number" value="<%=Results.count[i]%>" style="width: 7vw; text-align: center; height: 3vw;" />
-                <button style="float:right;width:3vw; height: 3vw;">+</button>
+        <%for(i of Object.keys(user_info)) {%>
+            <div class="card">
+                <p class="text">
+                    <%=i%>
+                </p>
+                <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
+                <% for(j of Results) { if(j.Name==i){%>
+                    <p class="text" style="font-size: 1.5vw;">Осталось <%=j.Count%> штук</p>
+                    <% }} %>
+                        <div style="width: 13vw; height: 3vw; margin:0 auto;">
+                            <button style="float:left;width:3vw; height: 3vw;">-</button>
+                            <input type="number" value="<%=user_info[i] %>"
+                                style="width: 7vw; text-align: center; height: 3vw;" />
+                            <button style="float:right;width:3vw; height: 3vw;">+</button>
+                        </div>
             </div>
-        </div>
-        <% } }%>
+            <% } %>
     </div>
     <div>
         <a href="./buy.html">
@@ -195,9 +199,6 @@
             var form = document.querySelector("#forma");
             form.style["display"] = 'none';
         }
-        var src = window.location.search.match(new RegExp('[^&?]+', 'gm'));
-        if (src[0].split("=")[1] != localStorage.getItem("id"))
-            document.location.href = '/basket?id=' + localStorage.getItem("id");
     </script>
 </body>
 

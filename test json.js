@@ -19,9 +19,24 @@ const connection = mysql.createConnection({
   password: "12345",
   database: "shop"
 });
-
+function check_basket(results) {
+  var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
+  for (i of file)
+    for (j of results)
+      if (i.basket) {
+        let index = i.basket.indexOf(j.Name);
+        if (index >= 0 && i.count[index] > j.Count)
+          i.count[index] = j.Count;
+        if (i.count[index] == 0) {
+          i.count.splice(index, 1);
+          i.basket.splice(index, 1);
+        }
+      }
+  fs.writeFileSync("info.json", JSON.stringify(file));
+  return file;
+}
 app.get('/', function (req, res) {
-  console.log(req.cookies.item);
+  console.log(req.cookies);
   if (!req.query.res)
     res.render(__dirname + '/сайт/index.ejs');
   else if (req.query.res >= 0)
@@ -32,14 +47,22 @@ app.get('/', function (req, res) {
 app.get('/shop', function (req, res) {
   connection.query(select_product + ";",
     function (err, results) {
+      check_basket(results);
       if (err) console.log(err);
       else
         res.render(__dirname + '/сайт/item.ejs', { Results: results });
     });
 });
 app.get('/basket', function (req, res) {
-  connection.query(select_product, function (err, results) {
-    res.render(__dirname + '/сайт/basket.ejs', {user_info:req.cookies,Results:results});
+  connection.query("select * from product where;", function (err, results) {
+    var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
+    for (i of file) {
+      if (i.id == parseInt(req.query.id)) {
+        res.render(__dirname + '/сайт/basket.ejs', { user_info: i, Results: results });
+        return;
+      }
+    }
+    res.render(__dirname + '/сайт/basket.ejs', {});
   });
 });
 app.get("/basket/buy", function (req, res) {
@@ -118,6 +141,30 @@ app.post("/purchased_all", function (req, res) {
       });
     }
   });
+});
+app.post("/id", function (req, res) {
+  var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
+  if (req.body.id == null) {
+    file.push({ "id": file.length });
+    fs.writeFileSync("info.json", JSON.stringify(file));
+    res.send({ "id": file.length - 1 });
+  }
+  else {
+    let count = file.some(i => i.id == req.body.id);
+    if (count == false) {
+      file.push({ "id": parseInt(req.body.id) });
+      fs.writeFileSync("info.json", JSON.stringify(file));
+    }
+    res.send({ "id": parseInt(req.body.id) });
+  }
+});
+app.post("/basket_user", function (req, res) {
+  var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
+  for (i of file)
+    if (i.id == req.body.id) {
+      res.send(i);
+      return;
+    }
 });
 app.post("/update_basket", function (req, res) {
   connection.query(select_product + " where Name='" + req.body.name + "';", function (err, result) {
