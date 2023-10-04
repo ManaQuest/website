@@ -101,10 +101,12 @@
                 <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
                 <p class="text" style="font-size: 1.5vw;">Осталось <%=i.Count%> штук</p>
                 <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                    <button style="float:left;width:3vw; height: 3vw;" onclick="change(<%=i.Id%>,'delete')">-</button>
+                    <button style="float:left;width:3vw; height: 3vw;"
+                        onclick="change(<%=i.Id%>,'delete',false)">-</button>
                     <input type="number" max="<%=i.Count%>" id="<%=i.Id%>" value="1" onchange="check(<%=i.Id%>)"
                         style="width: 7vw; text-align: center; height: 3vw;" />
-                    <button style="float:right;width:3vw; height: 3vw;" onclick="change(<%=i.Id%>,'add')">+</button>
+                    <button style="float:right;width:3vw; height: 3vw;"
+                        onclick="change(<%=i.Id%>,'add',false)">+</button>
                 </div>
 
                 <a href="/purshared" class="buy">
@@ -113,8 +115,8 @@
                 <button style="width: 15vw;
                     height: 3vw;
                     display: block;
-                    margin: 0.5vw auto 0 auto;" onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add')">В
-                    корзину</button>
+                    margin: 0.5vw auto 0 auto;" onclick="update_basket(<%=i.Id%>,'<%=i.Name%>','add',false)">
+                    В корзину</button>
             </div>
             <% } %>
     </div>
@@ -133,53 +135,7 @@
             <a>Email</a>
         </div>
     </div>
-    <script>
-        function change(id, method) {
-            var input = document.getElementById(id);
-            if (method == 'add') {
-                if (parseInt(input.value) < parseInt(input.max))
-                    input.value = parseInt(input.value) + 1;
-            }
-            else
-                if (input.value > 1)
-                    input.value = parseInt(input.value) - 1;
-        }
-        function check(id) {
-            var input = document.getElementById(id);
-            if (parseInt(input.value) > parseInt(input.max))
-                input.value = parseInt(input.max);
-            else if (parseInt(input.value) <= 0)
-                input.value = 1;
-        }
-        function update_basket(id, name, method) {
-            let input = document.getElementById(id);
-            let cookie = parseCookie();
-            let change = false;
-            for (i of cookie)
-                if (i[0] == name) {
-                    change = true;
-                    if (method = "add") {
-                        if (parseInt(input.value) + parseInt(i[1]) <= input.max)
-                            document.cookie = `${name}=${parseInt(input.value) + parseInt(i[1])}`;
-                    }
-                    else
-                        if (parseInt(i[1]) - parseInt(input.value) >= 0)
-                            document.cookie = `${name}=${parseInt(i[1]) - parseInt(input.value)}`;
-                }
-            if (change == false)
-                document.cookie = `${name}=${parseInt(input.value)}`;
-        }
-        function parseCookie() {
-            let cookie = document.cookie.split("; ");
-            let cookie_arr = [];
-            for (i of cookie)
-                cookie_arr.push(i.split("="));
-            if (cookie_arr.length == 1 && cookie_arr[0] == '')
-                return [];
-            else
-                return cookie_arr;
-        }
-    </script>
+    <script src="./../script_cookie.js"></script>
 </body>
 
 </html>

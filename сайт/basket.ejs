@@ -122,6 +122,12 @@
             margin: 0 auto;
             display: block;
         }
+
+        .input_count {
+            width: 7vw;
+            text-align: center;
+            height: 3vw;
+        }
     </style>
 </head>
 
@@ -144,17 +150,19 @@
                 <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
                 <% for(j of Results) { if(j.Name==i){%>
                     <p class="text" style="font-size: 1.5vw;">Осталось <%=j.Count%> штук</p>
+                    <div style="width: 13vw; height: 3vw; margin:0 auto;">
+                        <button style="float:left;width:3vw; height: 3vw;"
+                            onclick="change('<%=i%>','delete',true);update_basket('<%=i%>','<%=i%>','delete',true);">-</button>
+                        <input type="number" max="<%=j.Count%>" value="<%=user_info[i] %>" id="<%=i%>"
+                            class="input_count" onchange="update_basket('<%=i%>','<%=i%>','delete',true);"/>
+                        <button style="float:right;width:3vw; height: 3vw;"
+                            onclick="change('<%=i%>','add',true);update_basket('<%=i%>','<%=i%>','add',true);">+</button>
+                    </div>
                     <% }} %>
-                        <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                            <button style="float:left;width:3vw; height: 3vw;">-</button>
-                            <input type="number" value="<%=user_info[i] %>"
-                                style="width: 7vw; text-align: center; height: 3vw;" />
-                            <button style="float:right;width:3vw; height: 3vw;">+</button>
-                        </div>
             </div>
             <% } %>
     </div>
-    <div>
+    <div id="buy_button">
         <a href="./buy.html">
             <button class="submit"
                 style="width:15vw;height:3vw;font-size: 1.5vw;display: block; margin: 0.5vw auto 0 auto;">Купить
@@ -190,7 +198,17 @@
             <a>Email</a>
         </div>
     </div>
+    <script src="./../script_cookie.js"></script>
     <script>
+        var button = document.getElementById("buy_button");
+        if (parseCookie() == 0)
+            button.style["display"] = 'none';
+        var input = document.querySelectorAll(".input_count");
+        for (i of input)
+            if (i.value > i.max)
+                i.value = i.max;
+            else if(i.value==0|| i.max==0)
+            document.cookie=`${i.id}=1;max-age=-1`;
         function show() {
             var form = document.querySelector("#forma");
             form.style["display"] = 'block';
@@ -199,6 +217,7 @@
             var form = document.querySelector("#forma");
             form.style["display"] = 'none';
         }
+        console.log(document.cookie);
     </script>
 </body>
 

@@ -21,7 +21,6 @@ const connection = mysql.createConnection({
 });
 
 app.get('/', function (req, res) {
-  console.log(req.cookies.item);
   if (!req.query.res)
     res.render(__dirname + '/сайт/index.ejs');
   else if (req.query.res >= 0)
@@ -39,16 +38,16 @@ app.get('/shop', function (req, res) {
 });
 app.get('/basket', function (req, res) {
   connection.query(select_product, function (err, results) {
-    res.render(__dirname + '/сайт/basket.ejs', {user_info:req.cookies,Results:results});
+    for (i of Object.keys(req.cookies))
+      if (req.cookies[i] == 0)
+        req.clearCookie(i);
+    res.render(__dirname + '/сайт/basket.ejs', { user_info: req.cookies, Results: results });
   });
 });
 app.get("/basket/buy", function (req, res) {
   connection.query(select_product + ";",
     function (err, results) {
-      var file = check_basket(results);
-      for (i of file)
-        if (i.id == req.query.id)
-          res.render(__dirname + '/buy.ejs', { Results: i, multi: true });
+      res.render(__dirname + '/buy.ejs', { Results: {} });
     });
 });
 app.get("/:nameId/buy", function (req, res) {
@@ -79,82 +78,33 @@ app.post("/purchased", function (req, res) {
       res.redirect("/?res=-1");
   });
 });
-app.post("/purchased_all", function (req, res) {
+app.get("/all", function (req, res) {
   connection.query(select_product + ";", function (err, results) {
-    let count = true;
-    var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
+    let cookie = Object.keys(req.cookies);
+    let count = false;
     for (i of results)
-      for (j of file) {
-        if (j.id == req.body.id) {
-          if (j.basket.includes(i["Name"]) && i["Count"] - j.count[j.basket.indexOf(i["Name"])] < 0)
-            count = false;
-        }
-      }
+      if (cookie.indexOf(i.Name) >= 0 && i.Count - parseInt(req.cookies[i.Name]) >= 0)
+        count = true;
     if (count == true) {
       connection.query("select max(Order_id) from buyers;", function (err, result) {
-        for (i of file)
-          if (i.id == req.body.id) {
-            for (j = 0; j < i.basket.length; j++)
-              connection.query("UPDATE product set Count = Count -" + i.count[j] + " where Count-" + i.count[j] + ">=0 and Name='" + i.basket[j] + "';");
-            let sql = "insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ";
-            for (j = 0; j < i.basket.length; j++) {
-              if (result[0]['max(Order_id)'] == null)
-                sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + i.basket[j] + "'," + i.count[j] + ",0)";
-              else
-                sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + i.basket[j] + "'," + i.count[j] + "," + parseInt(result[0]['max(Order_id)'] + 1) + ")";
-              if (j < i.basket.length - 1)
-                sql += ",";
-            }
-            sql += ";";
-            connection.query(sql);
-            i.basket = [];
-            i.count = [];
-          }
-        fs.writeFileSync("info.json", JSON.stringify(file));
+        let sql = "insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ";
+        for (i of cookie) {
+          connection.query("UPDATE product set Count = Count -" + req.cookies[i] + " where Count-" + req.cookies[i] + ">=0 and Name='" + i + "';");
+          if (result[0]['max(Order_id)'] == null)
+            sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + i + "'," + req.cookies[i] + ",0)";
+          else
+            sql += "('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + i + "'," + req.cookies[i] + "," + parseInt(result[0]['max(Order_id)'] + 1) + ")";
+        }
+        sql += ";";
+        connection.query(sql);
         if (result[0]['max(Order_id)'] == null)
           res.redirect("/?res=0");
         else
           res.redirect("/?res=" + parseInt(result[0]['max(Order_id)'] + 1));
       });
     }
-  });
-});
-app.post("/update_basket", function (req, res) {
-  connection.query(select_product + " where Name='" + req.body.name + "';", function (err, result) {
-    var file = JSON.parse(fs.readFileSync("info.json", "utf8"));
-    req.body.count = Math.abs(req.body.count);
-    for (i of file) {
-      if (i.id == req.body.id) {
-        if (i.basket === undefined) {
-          i.basket = [];
-          i.count = [];
-        }
-        let index = i.basket.indexOf(req.body.name);
-        if (index == -1) {
-          if (result[0]["Count"] - req.body.count >= 0) {
-            i.basket.push(req.body.name);
-            i.count.push(req.body.count);
-          }
-        }
-        else if (req.body.method == 'add') {
-          if (req.body.count + i.count[index] <= result[0]["Count"])
-            i.count[index] += req.body.count;
-          else
-            i.count[index] = result[0]["Count"];
-        }
-        else if (req.body.method == 'delete') {
-          if (i.count[index] - req.body.count > 0)
-            i.count[index] -= req.body.count;
-          else {
-            i.count[index] = 0;
-            i.count.splice(index, 1);
-            i.basket.splice(index, 1);
-          }
-        }
-        res.send(i);
-      }
-    }
-    fs.writeFileSync("info.json", JSON.stringify(file));
+    else
+      res.redirect("/?res=-1");
   });
 });
 app.get("*", function (request, response) {
