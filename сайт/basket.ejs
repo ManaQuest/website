@@ -143,7 +143,7 @@
     </div>
     <div>
         <%for(i of Object.keys(user_info)) {%>
-            <div class="card">
+            <div class="card" id="card_<%=i%>">
                 <p class="text">
                     <%=i%>
                 </p>
@@ -152,11 +152,11 @@
                     <p class="text" style="font-size: 1.5vw;">Осталось <%=j.Count%> штук</p>
                     <div style="width: 13vw; height: 3vw; margin:0 auto;">
                         <button style="float:left;width:3vw; height: 3vw;"
-                            onclick="change('<%=i%>','delete',true);update_basket('<%=i%>','<%=i%>','delete',true);">-</button>
+                            onclick="change('<%=i%>','delete',true);update_basket('<%=i%>','<%=i%>',true);">-</button>
                         <input type="number" max="<%=j.Count%>" value="<%=user_info[i] %>" id="<%=i%>"
-                            class="input_count" onchange="update_basket('<%=i%>','<%=i%>','delete',true);"/>
+                            class="input_count" onchange="update_basket('<%=i%>','<%=i%>',true);" />
                         <button style="float:right;width:3vw; height: 3vw;"
-                            onclick="change('<%=i%>','add',true);update_basket('<%=i%>','<%=i%>','add',true);">+</button>
+                            onclick="change('<%=i%>','add',true);update_basket('<%=i%>','<%=i%>',true);">+</button>
                     </div>
                     <% }} %>
             </div>
@@ -201,14 +201,22 @@
     <script src="./../script_cookie.js"></script>
     <script>
         var button = document.getElementById("buy_button");
+        var cards = document.querySelectorAll(".card");
         if (parseCookie() == 0)
             button.style["display"] = 'none';
         var input = document.querySelectorAll(".input_count");
         for (i of input)
-            if (i.value > i.max)
+            if (parseInt(i.value) > parseInt(i.max) && parseInt(i.max) > 0)
                 i.value = i.max;
-            else if(i.value==0|| i.max==0)
-            document.cookie=`${i.id}=1;max-age=-1`;
+            else if (i.value == 0 || i.max == 0) {
+                document.cookie = `${i.id}=1;max-age=-1`;
+                for (j of cards)
+                    if (j.id == "card_" + i.id)
+                        j.remove();
+                cards = document.querySelectorAll(".card");
+                if (cards.length == 0)
+                    button.style.display = 'none';
+            }
         function show() {
             var form = document.querySelector("#forma");
             form.style["display"] = 'block';
@@ -217,7 +225,6 @@
             var form = document.querySelector("#forma");
             form.style["display"] = 'none';
         }
-        console.log(document.cookie);
     </script>
 </body>
 

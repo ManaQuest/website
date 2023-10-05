@@ -21,6 +21,7 @@ const connection = mysql.createConnection({
 });
 
 app.get('/', function (req, res) {
+  console.log(req);
   if (!req.query.res)
     res.render(__dirname + '/сайт/index.ejs');
   else if (req.query.res >= 0)
@@ -78,7 +79,7 @@ app.post("/purchased", function (req, res) {
       res.redirect("/?res=-1");
   });
 });
-app.get("/all", function (req, res) {
+app.post("/purchased_all", function (req, res) {
   connection.query(select_product + ";", function (err, results) {
     let cookie = Object.keys(req.cookies);
     let count = false;
