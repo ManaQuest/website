@@ -21,9 +21,9 @@ const connection = mysql.createConnection({
 });
 
 app.get('/', function (req, res) {
-  console.log(req);
+  console.log(req.cookies);
   if (!req.query.res)
-    res.render(__dirname + '/сайт/index.ejs');
+    res.render(__dirname + '/сайт/index.ejs',{q:req.cookies});
   else if (req.query.res >= 0)
     res.render(__dirname + '/сайт/index.ejs', { Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
   else if (req.query.res == -1)

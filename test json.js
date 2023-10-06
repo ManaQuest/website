@@ -36,7 +36,6 @@ function check_basket(results) {
   return file;
 }
 app.get('/', function (req, res) {
-  console.log(req.cookies);
   if (!req.query.res)
     res.render(__dirname + '/сайт/index.ejs');
   else if (req.query.res >= 0)
