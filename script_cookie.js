@@ -1,3 +1,4 @@
+document.cookie=decodeURIComponent(document.cookie);
 function change(id, method, basket) {
     var input = document.getElementById(id);
     if (method == 'add') {

@@ -90,54 +90,60 @@
         <h1 class="text" style="color: #a10202;">Магазин</h1>
     </div>
     <div class="block">
+        <button>
+            <a href="/basket" id="a_basket" style="display: block;padding: 1em 0 1em 0;">
+                <p class="text" style="margin-top: 0;margin-bottom: 0;">Корзина</p>
+            </a>
+        </button>
+    </div>
+    <div class="block">
         <p class="text" style="color: #ad1a1a;">Товары</p>
     </div>
     <div>
         <% for(i of Results) {%>
             <div class="card">
-                <a href="/info/<%=i.Name%>">
+                <a href="/<%=i.Name%>/buy">
                     <p class="text">
                         <%=i.Name%>
                     </p>
                     <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
                     <p class="text" style="font-size: 1.5vw;">Осталось <%=i.Count%> штук</p>
                     <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                        <button style="float:left;width:3vw; height: 3vw;"
-                            onclick="change(<%=i.Id%>,'delete',false)">-</button>
-                        <input type="number" max="<%=i.Count%>" id="<%=i.Id%>" value="1" onchange="check(<%=i.Id%>)"
-                            style="width: 7vw; text-align: center; height: 3vw;" />
-                        <button style="float:right;width:3vw; height: 3vw;"
-                            onclick="change(<%=i.Id%>,'add',false)">+</button>
-                    </div>
+                </a>
+                <button style="float:left;width:3vw; height: 3vw;"
+                    onclick="change('<%=i.Id%>','delete',false)">-</button>
+                <input type="number" max="<%=i.Count%>" id="<%=i.Id%>" value="1" onchange="check('<%=i.Id%>')"
+                    style="width: 7vw; text-align: center; height: 3vw;" />
+                <button style="float:right;width:3vw; height: 3vw;" onclick="change('<%=i.Id%>','add',false)">+</button>
+            </div>
 
-                    <a href="/buy/<%=i.Name%>" class="buy">
-                        <button>Купить</button>
-                    </a>
-                    <button style="width: 15vw;
+            <a href="/<%=i.Name%>/buy" class="buy">
+                <button>Купить</button>
+            </a>
+            <button style="width: 15vw;
                     height: 3vw;
                     display: block;
-                    margin: 0.5vw auto 0 auto;" onclick="update_basket(<%=i.Id%>,'<%=i.Name%>',false)">
-                        В корзину</button>
-                </a>
+                    margin: 0.5vw auto 0 auto;" onclick="update_basket('<%=i.Id%>','<%=i.Name%>',false)">
+                В корзину</button>
+    </div>
+    <% } %>
+        </div>
+        <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
+            <div class="footer">
+                <p><b>Магазин</b></p>
+                <a>Доставка</a>
+                <a>Оплата</a>
+                <a>Контакты</a>
+                <a>О магазине</a>
             </div>
-            <% } %>
-    </div>
-    <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
-        <div class="footer">
-            <p><b>Магазин</b></p>
-            <a>Доставка</a>
-            <a>Оплата</a>
-            <a>Контакты</a>
-            <a>О магазине</a>
+            <div class="footer">
+                <p><b>Соц. сети</b></p>
+                <a>YouTube</a>
+                <a>Telegram</a>
+                <a>Email</a>
+            </div>
         </div>
-        <div class="footer">
-            <p><b>Соц. сети</b></p>
-            <a>YouTube</a>
-            <a>Telegram</a>
-            <a>Email</a>
-        </div>
-    </div>
-    <script src="./../script_cookie.js"></script>
+        <script src="./../script_cookie.js"></script>
 </body>
 
 </html>
