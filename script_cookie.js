@@ -1,6 +1,7 @@
-document.cookie=decodeURIComponent(document.cookie);
+document.cookie = decodeURIComponent(document.cookie)+";path=/";
 function change(id, method, basket) {
     var input = document.getElementById(id);
+    var a = document.getElementById("a_" + id);
     if (method == 'add') {
         if (parseInt(input.value) < parseInt(input.max))
             input.value = parseInt(input.value) + 1;
@@ -10,6 +11,7 @@ function change(id, method, basket) {
             input.value = parseInt(input.value) - 1;
         else if (method == 'delete' && input.value >= 1 && basket == true)
             input.value = parseInt(input.value) - 1;
+    a.href = a.href.slice(0, 31) + "?count=" + input.value;
 }
 function check(id) {
     var input = document.getElementById(id);
@@ -25,7 +27,7 @@ function update_basket(id, name, basket) {
     var button = document.getElementById("buy_button");
     var cards = document.querySelectorAll(".card");
     if (document.cookie == '')
-        document.cookie = 'item={}';
+        document.cookie = 'item={"item":[],"count":[]}';
     let json_cookie = JSON.parse(document.cookie.slice(5));
     if (json_cookie.item !== undefined) {
         let index = json_cookie.item.indexOf(name);
@@ -57,5 +59,5 @@ function update_basket(id, name, basket) {
             json_cookie.count.push(parseInt(input.value));
         }
     }
-    document.cookie = "item=" + JSON.stringify(json_cookie);
+    document.cookie = "item=" + JSON.stringify(json_cookie)+";path=/";
 }

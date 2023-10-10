@@ -27,7 +27,6 @@ connection.query(select_product + ";",
   });
 
 app.get('/', function (req, res) {
-  console.log(req.cookies);
   if (!req.query.res)
     res.render(__dirname + '/сайт/index.ejs');
   else if (req.query.res >= 0)
@@ -42,7 +41,7 @@ app.get('/basket', function (req, res) {
   res.render(__dirname + '/сайт/basket.ejs', { user_info: req.cookies, Results: max_count });
 });
 app.get("/basket/buy", function (req, res) {
-  res.render(__dirname + '/сайт/buy.ejs', { Results: max_count, cookie: req.cookies });
+  res.render(__dirname + '/сайт/buy.ejs', { Results: max_count, cookie: req.cookies, params: req.query });
 });
 app.get("/:nameId/info", function (req, res) {
   for (i of max_count)
@@ -54,10 +53,9 @@ app.get("/:nameId/buy", function (req, res) {
     if (i.Name == req.params['nameId']) {
       let cookie = { "item": [], "count": [] };
       cookie.item.push(i.Name);
-      cookie.count.push(i.Count);
-      cookie=JSON.stringify(cookie);
-      console.log(JSON.stringify(cookie));
-      res.render(__dirname + '/сайт/buy.ejs', { Results: max_count, cookie: cookie});
+      cookie.count.push(req.query.count);
+      cookie = { "item": JSON.stringify(cookie) };
+      res.render(__dirname + '/сайт/buy.ejs', { Results: max_count, cookie: cookie, params: req.query });
     }
 });
 app.get("/*.js", function (req, res) {
@@ -69,21 +67,23 @@ app.post("/purchased", function (req, res) {
       connection.query("select max(Order_id) from buyers;", function (err, result) {
         if (result[0]['max(Order_id)'] == null)
           connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + ",0);", function (err, results) {
+            res.cookie('item', '{"item":[],"count":[]}');
             res.redirect("/?res=0");
           });
         else
           connection.query("insert ignore into buyers(First_name,Last_Name,House,Email,Name_Product,Count_in_Order,Order_id) values ('" + req.body.first_name + "','" + req.body.last_name + "','" + req.body.house + "','" + req.body.email + "','" + req.body.name + "'," + req.body.count + "," + parseInt(result[0]['max(Order_id)'] + 1) + ");", function (err, results) {
+            res.cookie('item', '{"item":[],"count":[]}');
             res.redirect("/?res=" + parseInt(result[0]['max(Order_id)'] + 1));
           });
       });
-    else
-      connection.query(select_product + ";",
-        function (err, results) {
-          max_count = results;
-        });
-    res.cookie('item', '{"item":[],"count":[]}');
-    res.redirect("/?res=-1");
-
+    else {
+      res.cookie('item', '{"item":[],"count":[]}');
+      res.redirect("/?res=-1");
+    }
+    connection.query(select_product + ";",
+      function (err, results) {
+        max_count = results;
+      });
   });
 });
 app.post("/purchased_all", function (req, res) {
@@ -119,8 +119,10 @@ app.post("/purchased_all", function (req, res) {
           res.redirect("/?res=" + parseInt(result[0]['max(Order_id)'] + 1));
       });
     }
-    else
+    else {
+      res.cookie('item', '{"item":[],"count":[]}');
       res.redirect("/?res=-1");
+    }
   });
 });
 app.get("*", function (request, response) {

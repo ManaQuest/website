@@ -102,7 +102,7 @@
     <div>
         <% for(i of Results) {%>
             <div class="card">
-                <a href="/<%=i.Name%>/buy">
+                <a href="/<%=i.Name%>/info">
                     <p class="text">
                         <%=i.Name%>
                     </p>
@@ -116,8 +116,7 @@
                     style="width: 7vw; text-align: center; height: 3vw;" />
                 <button style="float:right;width:3vw; height: 3vw;" onclick="change('<%=i.Id%>','add',false)">+</button>
             </div>
-
-            <a href="/<%=i.Name%>/buy" class="buy">
+            <a id="a_<%=i.Id%>" href="/<%=i.Name%>/buy" class="buy">
                 <button>Купить</button>
             </a>
             <button style="width: 15vw;
@@ -144,6 +143,11 @@
             </div>
         </div>
         <script src="./../script_cookie.js"></script>
+        <script>
+            var a = document.querySelectorAll(".buy");
+            for (i of a)
+                i.href += "?count=1";
+        </script>
 </body>
 
 </html>

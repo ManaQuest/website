@@ -108,15 +108,29 @@
             margin: 0 auto;
             display: block;
         }
-        .card_info{
-            width:70vw;
-            margin:0 auto;
+
+        .card_info {
+            width: 70vw;
+            margin: 0 auto;
             background-color: #872720;
             padding: 1em 0 1em 0;
         }
+
         .card_info p:first-child {
             margin-top: 0;
             background-color: #872720;
+        }
+        .buy {
+            text-decoration: none;
+            margin: 0.5vw 0 0 0;
+            display: block;
+        }
+
+        .buy button {
+            width: 15vw;
+            height: 3vw;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -131,23 +145,24 @@
     <div class="block">
         <p class="text" style="color: #ad1a1a;">Корзина</p>
     </div>
-    <div>
-        <div class="card_info">
-            <p class="text"><%=cookie.Name%></p>
-            <img style="width:60vw; height: 20vw; margin:0 auto; display:block;" src="" />
-            <p style="font-size: 2vw;">dfshjhsdfsdfjhsdfsddfjk</p>
-            <p class="text" style="margin-bottom: 0;">10 штук</p>
-        </div>
-    </div>
-    <div id="forma"
-        style="width:35vw;margin:1vw auto 0 auto; background-color: #391e94; padding: 1vw 0 1vw 0;">
-        <form class="form">
-            <input type="text" placeholder="Имя" />
-            <input type="text" placeholder="Фамилия" />
-            <input type="email" placeholder="Email" />
-            <input type="text" placeholder="Адрес доставки" />
-            <input type="submit" value="Купить" class="submit" />
-        </form>
+    <div class="card_info">
+        <p class="text">
+            <%=cookie.Name%>
+        </p>
+        <img style="width:60vw; height: 20vw; margin:0 auto; display:block;" src="" />
+        <p style="font-size: 2vw;">dfshjhsdfsdfjhsdfsddfjk</p>
+        <p class="text" style="margin-bottom: 0;">
+            <%=cookie.Count%> штук(-и)
+        </p>
+        <a id="a_<%=i.Id%>" href="/<%=i.Name%>/buy?count=1" class="buy">
+            <button>Купить</button>
+        </a>
+        <input type="hidden" id="<%=cookie.Id%>" value="1" max="<%=cookie.Count%>">
+        <button style="width: 15vw;
+                height: 3vw;
+                display: block;
+                margin: 0.5vw auto 0 auto;" onclick="update_basket('<%=cookie.Id%>','<%=cookie.Name%>',false)">
+            В корзину</button>
     </div>
     <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
         <div class="footer">
@@ -164,16 +179,7 @@
             <a>Email</a>
         </div>
     </div>
-    <script>
-        function show() {
-            var form = document.querySelector("#forma");
-            form.style["display"] = 'block';
-        }
-        function hide() {
-            var form = document.querySelector("#forma");
-            form.style["display"] = 'none';
-        }
-    </script>
+    <script src="./../script_cookie.js"></script>
 </body>
 
 </html>

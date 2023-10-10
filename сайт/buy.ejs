@@ -151,6 +151,10 @@
             <input type="email" placeholder="Email" name="email" />
             <input type="text" placeholder="Адрес доставки" name="house" />
             <input type="submit" value="Купить" class="submit" />
+            <% if(params['count']){ %>
+                <input type="hidden" name="name" value="<%=JSON.parse(cookie.item).item[0]%>"/>
+            <input type="hidden" name="count" value="<%=JSON.parse(cookie.item).count[0]%>" />
+            <% } %>
         </form>
     </div>
     <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
@@ -169,14 +173,9 @@
         </div>
     </div>
     <script>
-        function show() {
-            var form = document.querySelector("#forma");
-            form.style["display"] = 'block';
-        }
-        function hide() {
-            var form = document.querySelector("#forma");
-            form.style["display"] = 'none';
-        }
+        var forma=document.querySelector('.form');
+        if(document.location.href.indexOf("basket")==-1)
+        forma.action='/purchased';
     </script>
 </body>
 
