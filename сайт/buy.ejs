@@ -5,129 +5,14 @@
     <title>Магазин</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .card {
-            width: 20vw;
-            margin: 3vw auto 0 auto;
-            background-color: #872720;
-            padding: 1em 0 1em 0;
-        }
-
-        .card p:first-child {
-            margin-top: 0;
-            background-color: #872720;
-        }
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
-        body {
-            background-color: #04015e;
-            margin: 0;
-        }
-
-        .text {
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .block {
-            margin: 3vw auto 0 auto;
-        }
-
-        .block button {
-            background-color: #ad1a1a;
-            border: none;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .footer:first-child {
-            width: 20vw;
-            float: left;
-            font-size: 1.5vw;
-        }
-
-        .footer:last-child {
-            width: 20vw;
-            float: right;
-            font-size: 1.5vw;
-        }
-
-        .footer a {
-            display: block;
-            text-align: center;
-        }
-
-        .footer p {
-            text-align: center;
-        }
-
-        .buy {
-            text-decoration: none;
-            margin: 0.5vw auto 0 auto;
-            display: block;
-            width: 15vw;
-        }
-
-        .buy button {
-            width: 15vw;
-            height: 3vw;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .form {
-            width: 30vw;
-            margin: 0 auto;
-        }
-
-        .form input {
-            margin: 0.5vw auto 0 auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form input:first-child {
-            margin: 1vw auto 0 auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form input:last-child {
-            margin: 0.5vw auto 1vw auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form ::placeholder {
-            text-align: center;
-        }
-
-        .submit {
-            background-color: #ad1a1a;
-            border: none;
-            margin: 0 auto;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 
 <body>
     <div>
-        <img src="" style="width:15vw; height: 15vw; margin:0 auto; display:block;" />
+        <a href="/">
+            <img src="" class="img_header" />
+        </a>
     </div>
     <div class="block">
         <h1 class="text" style="color: #a10202;">Магазин</h1>
@@ -137,27 +22,31 @@
     </div>
     <div>
         <% for(let i=0;i<JSON.parse(cookie.item).item.length; i++){%>
-        <div class="card">
-            <p class="text"><%=JSON.parse(cookie.item).item[i]%></p>
-            <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
-            <p class="text" style="margin-bottom: 0;"><%=JSON.parse(cookie.item).count[i]%> штук(-и)</p>
-        </div>
-        <%}%>
+            <div class="card">
+                <p class="text">
+                    <%=JSON.parse(cookie.item).item[i]%>
+                </p>
+                <img src="" class="img_header" />
+                <p class="text" style="margin-bottom: 0;">
+                    <%=JSON.parse(cookie.item).count[i]%> штук(-и)
+                </p>
+            </div>
+            <%}%>
     </div>
     <div id="forma" style="width:35vw;margin:1vw auto 0 auto; background-color: #391e94; padding: 1vw 0 1vw 0;">
         <form class="form" action="/purchased_all" method="POST">
-            <input type="text" placeholder="Имя" name="first_name"/>
+            <input type="text" placeholder="Имя" name="first_name" />
             <input type="text" placeholder="Фамилия" name="last_name" />
             <input type="email" placeholder="Email" name="email" />
             <input type="text" placeholder="Адрес доставки" name="house" />
             <input type="submit" value="Купить" class="submit" />
             <% if(params['count']){ %>
-                <input type="hidden" name="name" value="<%=JSON.parse(cookie.item).item[0]%>"/>
-            <input type="hidden" name="count" value="<%=JSON.parse(cookie.item).count[0]%>" />
-            <% } %>
+                <input type="hidden" name="name" value="<%=JSON.parse(cookie.item).item[0]%>" />
+                <input type="hidden" name="count" value="<%=JSON.parse(cookie.item).count[0]%>" />
+                <% } %>
         </form>
     </div>
-    <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
+    <div class="div_footer">
         <div class="footer">
             <p><b>Магазин</b></p>
             <a>Доставка</a>
@@ -172,10 +61,11 @@
             <a>Email</a>
         </div>
     </div>
+    </div>
     <script>
-        var forma=document.querySelector('.form');
-        if(document.location.href.indexOf("basket")==-1)
-        forma.action='/purchased';
+        var forma = document.querySelector('.form');
+        if (document.location.href.indexOf("basket") == -1)
+            forma.action = '/purchased';
     </script>
 </body>
 

@@ -5,110 +5,8 @@
     <title>Магазин</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../style.css">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .card {
-            width: 20vw;
-            margin: 3vw auto 0 auto;
-            background-color: #872720;
-            padding: 1em 0 1em 0;
-        }
-
-        .card p:first-child {
-            margin-top: 0;
-            background-color: #872720;
-        }
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
-        body {
-            background-color: #04015e;
-            margin: 0;
-        }
-
-        .text {
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .block {
-            margin: 3vw auto 0 auto;
-        }
-
-        .block button {
-            background-color: #ad1a1a;
-            border: none;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .footer:first-child {
-            width: 20vw;
-            float: left;
-            font-size: 1.5vw;
-        }
-
-        .footer:last-child {
-            width: 20vw;
-            float: right;
-            font-size: 1.5vw;
-        }
-
-        .footer a {
-            display: block;
-            text-align: center;
-        }
-
-        .footer p {
-            text-align: center;
-        }
-
-        .form {
-            width: 30vw;
-            margin: 0 auto;
-        }
-
-        .form input {
-            margin: 0.5vw auto 0 auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form input:first-child {
-            margin: 1vw auto 0 auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form input:last-child {
-            margin: 0.5vw auto 1vw auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form ::placeholder {
-            text-align: center;
-        }
-
-        .submit {
-            background-color: #ad1a1a;
-            border: none;
-            margin: 0 auto;
-            display: block;
-        }
-
         .card_info {
             width: 70vw;
             margin: 0 auto;
@@ -120,24 +18,14 @@
             margin-top: 0;
             background-color: #872720;
         }
-        .buy {
-            text-decoration: none;
-            margin: 0.5vw 0 0 0;
-            display: block;
-        }
-
-        .buy button {
-            width: 15vw;
-            height: 3vw;
-            display: block;
-            margin: 0 auto;
-        }
     </style>
 </head>
 
 <body>
     <div>
-        <img src="" style="width:15vw; height: 15vw; margin:0 auto; display:block;" />
+        <a href="/">
+            <img src="" class="img_header" />
+        </a>
     </div>
     <div class="block">
         <h1 class="text" style="color: #a10202;">Магазин</h1>
@@ -158,13 +46,14 @@
             <button>Купить</button>
         </a>
         <input type="hidden" id="<%=cookie.Id%>" value="1" max="<%=cookie.Count%>">
-        <button style="width: 15vw;
-                height: 3vw;
-                display: block;
-                margin: 0.5vw auto 0 auto;" onclick="update_basket('<%=cookie.Id%>','<%=cookie.Name%>',false)">
-            В корзину</button>
+        <div class="buy">
+            <button style="margin: 0.5vw auto 0 auto;"
+                onclick="update_basket('<%=cookie.Id%>','<%=cookie.Name%>',false)">
+                В корзину
+            </button>
+        </div>
     </div>
-    <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
+    <div class="div_footer">
         <div class="footer">
             <p><b>Магазин</b></p>
             <a>Доставка</a>

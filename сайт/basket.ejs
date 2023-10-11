@@ -1,225 +1,55 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Магазин</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .card {
-            width: 20vw;
-            margin: 3vw auto 0 auto;
-            background-color: #872720;
-            padding: 1em 0 1em 0;
-        }
-
-        .card p:first-child {
-            margin-top: 0;
-            background-color: #872720;
-        }
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
-        body {
-            background-color: #04015e;
-            margin: 0;
-        }
-
-        .text {
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .block {
-            margin: 3vw auto 0 auto;
-        }
-
-        .block button {
-            background-color: #ad1a1a;
-            border: none;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .footer:first-child {
-            width: 20vw;
-            float: left;
-            font-size: 1.5vw;
-        }
-
-        .footer:last-child {
-            width: 20vw;
-            float: right;
-            font-size: 1.5vw;
-        }
-
-        .footer a {
-            display: block;
-            text-align: center;
-        }
-
-        .footer p {
-            text-align: center;
-        }
-
-        .buy {
-            text-decoration: none;
-            margin: 0.5vw auto 0 auto;
-            display: block;
-            width: 15vw;
-        }
-
-        .buy button {
-            width: 15vw;
-            height: 3vw;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .form {
-            width: 30vw;
-            margin: 0 auto;
-        }
-
-        .form input {
-            margin: 0.5vw auto 0 auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form input:first-child {
-            margin: 2vw auto 0 auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form input:last-child {
-            margin: 0.5vw auto 2vw auto;
-            display: block;
-            width: 30vw;
-            text-align: center;
-            font-size: 2vw;
-        }
-
-        .form ::placeholder {
-            text-align: center;
-        }
-
-        .submit {
-            background-color: #ad1a1a;
-            border: none;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .input_count {
-            width: 7vw;
-            text-align: center;
-            height: 3vw;
-        }
-    </style>
-</head>
-
-<body>
-    <div>
-        <img src="" style="width:15vw; height: 15vw; margin:0 auto; display:block;" />
-    </div>
-    <div class="block">
-        <h1 class="text" style="color: #a10202;">Магазин</h1>
-    </div>
-    <div class="block">
-        <button>
-            <a href="/shop" style="display: block;padding: 1em 0 1em 0;">
-                <p class="text" style="margin-top: 0;margin-bottom: 0;">Товары</p>
-            </a>
+<div class="button">
+    <button>
+        <a href="/shop">
+            <p>Товары</p>
+        </a>
+    </button>
+</div>
+</div>
+<div class="block">
+    <p class="text" style="color: #ad1a1a;">Корзина</p>
+</div>
+<div>
+    <%for(let i=0; i<JSON.parse(user_info.item).item.length;i++) {%>
+        <div class="card" id="card_<%=i%>">
+            <p class="text">
+                <%=JSON.parse(user_info.item).item[i]%>
+            </p>
+            <img src="" class="img_header" />
+            <% for(j of Results) { if(j.Name==JSON.parse(user_info.item).item[i]){%>
+                <p class="text" style="font-size: 1.5vw;">Осталось <%=j.Count%> штук</p>
+                <div class="counter">
+                    <button
+                        onclick="change('<%=i%>','delete',true);update_basket('<%=i%>','<%=JSON.parse(user_info.item).item[i]%>',true);">-</button>
+                    <input type="number" max="<%=j.Count%>" value="<%=JSON.parse(user_info.item).count[i] %>"
+                        id="<%=i%>" onchange="update_basket('<%=i%>','<%=JSON.parse(user_info.item).item[i]%>',true);"
+                        readonly />
+                    <button
+                        onclick="change('<%=i%>','add',true);update_basket('<%=i%>','<%=JSON.parse(user_info.item).item[i]%>',true);">+</button>
+                </div>
+                <% }} %>
+        </div>
+        <% } %>
+</div>
+<div id="buy_button" style="display:none;">
+    <a href="/basket/buy" class="buy">
+        <button style="font-size: 1.5vw; background-color: #ad1a1a; border: none;">
+            Купить всё
         </button>
-    </div>
-    <div class="block">
-        <p class="text" style="color: #ad1a1a;">Корзина</p>
-    </div>
-    <div>
-        <%for(let i=0; i<JSON.parse(user_info.item).item.length;i++) {%>
-            <div class="card" id="card_<%=i%>">
-                <p class="text">
-                    <%=JSON.parse(user_info.item).item[i]%>
-                </p>
-                <img style="width:15vw; height: 15vw; margin:0 auto; display:block;" src="" />
-                <% for(j of Results) { if(j.Name==JSON.parse(user_info.item).item[i]){%>
-                    <p class="text" style="font-size: 1.5vw;">Осталось <%=j.Count%> штук</p>
-                    <div style="width: 13vw; height: 3vw; margin:0 auto;">
-                        <button style="float:left;width:3vw; height: 3vw;"
-                            onclick="change('<%=i%>','delete',true);update_basket('<%=i%>','<%=JSON.parse(user_info.item).item[i]%>',true);">-</button>
-                        <input type="number" max="<%=j.Count%>" value="<%=JSON.parse(user_info.item).count[i] %>"
-                            id="<%=i%>" class="input_count"
-                            onchange="update_basket('<%=i%>','<%=JSON.parse(user_info.item).item[i]%>',true);" />
-                        <button style="float:right;width:3vw; height: 3vw;"
-                            onclick="change('<%=i%>','add',true);update_basket('<%=i%>','<%=JSON.parse(user_info.item).item[i]%>',true);">+</button>
-                    </div>
-                    <% }} %>
-            </div>
-            <% } %>
-    </div>
-    <div id="buy_button">
-        <a href="/basket/buy">
-            <button class="submit"
-                style="width:15vw;height:3vw;font-size: 1.5vw;display: block; margin: 0.5vw auto 0 auto;">Купить
-                всё</button></a>
-    </div>
-    <div id="forma"
-        style="position:fixed; width:35vw; top:15vw; left:0;right:0;margin:0 auto; background-color: aqua;display:none;">
-        <div style="height:2vw;">
-            <button style="background-color:#19d14a; width:2vw;height:2vw; float:right; border:none;" onclick="hide();">
-
-            </button>
-        </div>
-        <form class="form">
-            <input type="text" placeholder="Имя" />
-            <input type="text" placeholder="Фамилия" />
-            <input type="email" placeholder="Email" />
-            <input type="text" placeholder="Адрес доставки" />
-            <input type="submit" value="Купить" class="submit" />
-        </form>
-    </div>
-    <div style="margin:3vw 0 0 0; height:15vw; background-color: #2d3180">
-        <div class="footer">
-            <p><b>Магазин</b></p>
-            <a>Доставка</a>
-            <a>Оплата</a>
-            <a>Контакты</a>
-            <a>О магазине</a>
-        </div>
-        <div class="footer">
-            <p><b>Соц. сети</b></p>
-            <a>YouTube</a>
-            <a>Telegram</a>
-            <a>Email</a>
-        </div>
-    </div>
+    </a>
     <script src="./../script_cookie.js"></script>
     <script>
         var button = document.getElementById("buy_button");
         var cards = document.querySelectorAll(".card");
         let json_cookie = JSON.parse(document.cookie.slice(5));
-        if (json_cookie.item.length == 0)
-            button.style["display"] = 'none';
+        if (json_cookie.item.length > 0)
+            button.style["display"] = 'block';
         var input = document.querySelectorAll(".input_count");
         for (i of input) {
             if (parseInt(i.value) == 0 || parseInt(i.max) == 0) {
                 for (j of cards)
                     if (cards.id == "card_" + i.id) {
                         j.remove();
-                        button.style["display"] = 'none';
                     }
                 json_cookie.count.splice(json_cookie.item.indexOf(i.value), 1);
                 json_cookie.item.splice(json_cookie.item.indexOf(i.value), 1);
@@ -235,6 +65,4 @@
             form.style["display"] = 'none';
         }
     </script>
-</body>
-
-</html>
+</div>

@@ -28,17 +28,20 @@ connection.query(select_product + ";",
 
 app.get('/', function (req, res) {
   if (!req.query.res)
-    res.render(__dirname + '/сайт/index.ejs');
+    res.render(__dirname + '/сайт/start.ejs',{name:'index'});
   else if (req.query.res >= 0)
-    res.render(__dirname + '/сайт/index.ejs', { Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
+    res.render(__dirname + '/сайт/start.ejs', { name:'index',Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
   else if (req.query.res == -1)
-    res.render(__dirname + '/сайт/index.ejs', { Id: "Нужного количества товара не осталось." });
+    res.render(__dirname + '/сайт/start.ejs', {  name:'index',Id: "Нужного количества товара не осталось." });
 });
 app.get('/shop', function (req, res) {
-  res.render(__dirname + '/сайт/item.ejs', { Results: max_count });
+  res.render(__dirname + '/сайт/start.ejs', { name:'item',Results: max_count });
 });
 app.get('/basket', function (req, res) {
-  res.render(__dirname + '/сайт/basket.ejs', { user_info: req.cookies, Results: max_count });
+  res.render(__dirname + '/сайт/start.ejs', { name:'basket',user_info: req.cookies, Results: max_count });
+});
+app.get('/payment', function (req, res) {
+  res.render(__dirname + '/сайт/payment.ejs', { user_info: req.cookies, Results: max_count });
 });
 app.get("/basket/buy", function (req, res) {
   res.render(__dirname + '/сайт/buy.ejs', { Results: max_count, cookie: req.cookies, params: req.query });
@@ -59,6 +62,9 @@ app.get("/:nameId/buy", function (req, res) {
     }
 });
 app.get("/*.js", function (req, res) {
+  res.sendFile(__dirname + req.url);
+});
+app.get("/*.css", function (req, res) {
   res.sendFile(__dirname + req.url);
 });
 app.post("/purchased", function (req, res) {

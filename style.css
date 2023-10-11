@@ -1,0 +1,173 @@
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+body {
+    background-color: #04015e;
+    margin: 0;
+}
+
+.text {
+    text-align: center;
+    font-size: 2vw;
+}
+
+.block {
+    margin: 3vw auto 0 auto;
+}
+
+/*Маленькая кнопка*/
+.buy {
+    text-decoration: none;
+    margin: 0.5vw auto 0 auto;
+    display: block;
+    width: 15vw;
+}
+
+.buy button {
+    width: 15vw;
+    height: 3vw;
+    display: block;
+    margin: 0 auto;
+}
+
+/*Футер*/
+.div_footer {
+    margin: 3vw 0 0 0;
+    height: 15vw;
+    background-color: #2d3180;
+}
+
+.footer:first-child {
+    width: 20vw;
+    float: left;
+    font-size: 1.5vw;
+    text-align: center;
+}
+
+.footer:last-child {
+    width: 20vw;
+    float: right;
+    font-size: 1.5vw;
+    text-align: center;
+}
+
+.footer a {
+    display: block;
+}
+
+/*Большая кнопка*/
+.button {
+    margin: 3vw auto 0 auto;
+}
+
+.button button {
+    background-color: #ad1a1a;
+    border: none;
+    margin: 0 auto;
+    display: block;
+}
+
+.button a {
+    display: block;
+    padding: 1em 0 1em 0;
+}
+
+.button p {
+    text-align: center;
+    font-size: 2vw;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/*Изображение*/
+.img_header {
+    width: 15vw;
+    height: 15vw;
+    margin: 0 auto;
+    display: block;
+}
+
+/*Карта товара*/
+.card {
+    width: 20vw;
+    margin: 3vw auto 0 auto;
+    background-color: #872720;
+    padding: 1em 0 1em 0;
+}
+
+.card p:first-child {
+    margin-top: 0;
+    background-color: #872720;
+}
+
+/*Низ карты товара*/
+.counter {
+    width: 13vw;
+    height: 3vw;
+    margin: 0 auto;
+}
+
+.counter button:first-child {
+    float: left;
+    width: 3vw;
+    height: 3vw;
+}
+
+.counter button:last-child {
+    float: right;
+    width: 3vw;
+    height: 3vw;
+}
+
+.counter input {
+    width: 7vw;
+    text-align: center;
+    height: 3vw;
+}
+
+/*Форма*/
+.form {
+    width: 30vw;
+    margin: 0 auto;
+}
+
+.form input {
+    margin: 0.5vw auto 0 auto;
+    display: block;
+    width: 30vw;
+    text-align: center;
+    font-size: 2vw;
+}
+
+.form input:first-child {
+    margin: 1vw auto 0 auto;
+    display: block;
+    width: 30vw;
+    text-align: center;
+    font-size: 2vw;
+}
+
+.form input:last-child {
+    margin: 0.5vw auto 1vw auto;
+    display: block;
+    width: 30vw;
+    text-align: center;
+    font-size: 2vw;
+}
+
+.form ::placeholder {
+    text-align: center;
+}
+
+.submit {
+    background-color: #ad1a1a;
+    border: none;
+    margin: 0 auto;
+    display: block;
+}
