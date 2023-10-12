@@ -32,3 +32,16 @@ Id int not null AUTO_INCREMENT primary key,
 First_name varchar(50) unique,
 Last_Name varchar(50) unique,
 Email varchar(50) unique);
+
+
+
+
+drop table news;
+create table news(
+Id int not null AUTO_INCREMENT primary key,
+title varchar(50) unique,
+content varchar(50) unique);
+
+insert into news(title, content)
+values
+('First news','First news');

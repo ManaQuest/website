@@ -171,3 +171,15 @@ body {
     margin: 0 auto;
     display: block;
 }
+
+.card_info {
+    width: 70vw;
+    margin: 0 auto;
+    background-color: #872720;
+    padding: 1em 0 1em 0;
+}
+
+.card_info p:first-child {
+    margin-top: 0;
+    background-color: #872720;
+}

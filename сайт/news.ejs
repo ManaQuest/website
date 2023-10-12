@@ -1,0 +1,32 @@
+<style>
+    .news {
+        width: 50vw;
+        background-color: #872720;
+        margin: 0 auto;
+        padding: 0.5em;
+    }
+
+    .news img {
+        display: block;
+        width: 20vw;
+        height: 20vw;
+        margin: 0 auto;
+    }
+
+    .news a {
+        display: block;
+        width: 20vw;
+        text-align: center;
+        margin: 0 auto;
+        background-color: #5b1813;
+        border-radius: 1vw;
+    }
+</style>
+<% for(i of Results) {%>
+<div class="news">
+    <p class="text"><%=i.title  %></p>
+    <img src="">
+    <p><%=i.title%></p>
+    <a href="news/1">Читать далее</a>
+</div>
+<%}%>
