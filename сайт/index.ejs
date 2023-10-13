@@ -13,12 +13,13 @@
             </a>
         </button>
     </div>
-    <div class="button">
-        <button>
-            <a href="/news">
-                <p>Новости</p>
-            </a>
-        </button>
-    </div>
+    <%-include('news')%>
+        <div class="button">
+            <button>
+                <a href="/news?page=0">
+                    <p>Все новости</p>
+                </a>
+            </button>
+        </div>
 </div>
 </div>

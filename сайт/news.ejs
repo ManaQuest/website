@@ -2,8 +2,9 @@
     .news {
         width: 50vw;
         background-color: #872720;
-        margin: 0 auto;
+        margin: 3vw auto 0 auto;
         padding: 0.5em;
+        font-size: 2vw;
     }
 
     .news img {
@@ -20,13 +21,54 @@
         margin: 0 auto;
         background-color: #5b1813;
         border-radius: 1vw;
+        font-size: 2vw;
     }
 </style>
-<% for(i of Results) {%>
-<div class="news">
-    <p class="text"><%=i.title  %></p>
-    <img src="">
-    <p><%=i.title%></p>
-    <a href="news/1">Читать далее</a>
-</div>
-<%}%>
+<% if(full==false) { for(i of Results) {%>
+    <div class="news">
+        <p class="text">
+            <%=i.title %>
+        </p>
+        <img src="">
+        <p style="font-size: 1.5vw;">
+            <%=i.pre_content%>
+        </p>
+        <a href="/news/<%=i.Id%>" style="font-size: 2vw;">Читать далее</a>
+    </div>
+    <%}%>
+        <div style="width:30vw;margin:1vw auto 0 auto; font-size: 2vw; height:4vw;text-align:center;">
+            <% if(status!="min" ) {%>
+                <a href="/news?page=<%=parseInt(page)-1%>"
+                    style="width:10vw;background-color: #872720; height:4vw;padding:1vw; float:left;">
+                    Назад
+                </a>
+                <% }if(status!="max" ) {%>
+                    <a href="/news?page=<%=parseInt(page)+1%>"
+                        style="width:10vw;background-color: #872720; height:4vw;padding:1vw; float:right;">
+                        Вперёд
+                    </a>
+                    <%}%>
+        </div>
+        <%} else if(full==true){%>
+            <div class="news">
+                <p class="text">
+                    <%=i.title %>
+                </p>
+                <img src="">
+                <p>
+                    <%=i.content%>
+                </p>
+                <a href="/" style="font-size: 1.5vw;">На главную</a>
+            </div>
+            <%} else if(full==null){for(i of Results) {%>
+                <div class="news">
+                    <p class="text">
+                        <%=i.title %>
+                    </p>
+                    <img src="">
+                    <p style="font-size: 1.5vw;">
+                        <%=i.pre_content%>
+                    </p>
+                    <a href="/news/<%=i.Id%>" style="font-size: 2vw;">Читать далее</a>
+                </div>
+                <%}}%>

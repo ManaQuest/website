@@ -6,6 +6,7 @@
     "mysql2": "^3.6.1",
     "nodemailer": "^6.9.5",
     "nodemailer-direct-transport": "^3.3.2",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "request": "^2.88.2"
   }
 }

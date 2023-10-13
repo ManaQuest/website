@@ -11,8 +11,6 @@ app.use(cookieParser());
 var select_product = "select * from product";
 var max_count = [];
 
-
-
 const connection = mysql.createConnection({
   host: "localhost",
   port: "3030",
@@ -27,21 +25,63 @@ connection.query(select_product + ";",
   });
 
 app.get('/', function (req, res) {
-  if (!req.query.res)
-    res.render(__dirname + '/сайт/start.ejs', { name: 'index' });
-  else if (req.query.res >= 0)
-    res.render(__dirname + '/сайт/start.ejs', { name: 'index', Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту." });
-  else if (req.query.res == -1)
-    res.render(__dirname + '/сайт/start.ejs', { name: 'index', Id: "Нужного количества товара не осталось." });
+  connection.query("select * from news ORDER BY Id DESC LIMIT 0, 3;",
+    function (err, results) {
+      if (!req.query.res)
+        res.render(__dirname + '/сайт/start.ejs', { name: 'index', Results: results, full: null });
+      else if (req.query.res >= 0)
+        res.render(__dirname + '/сайт/start.ejs', { name: 'index', Id: "Ваш номер заказа " + req.query.res + ". Вам выслано электронное письмо на почту.", Results: results, full: false });
+      else if (req.query.res == -1)
+        res.render(__dirname + '/сайт/start.ejs', { name: 'index', Id: "Нужного количества товара не осталось.", Results: results, full: false, status: "" });
+    });
 });
 app.get('/shop', function (req, res) {
   res.render(__dirname + '/сайт/start.ejs', { name: 'item', Results: max_count });
 });
 app.get('/news', function (req, res) {
-  connection.query("select * from news;",function(err,results){
-    res.render(__dirname + '/сайт/start.ejs', { name: 'news', Results: results });
-  });
-  
+  let count_page = 3;
+  connection.query("select * from news ORDER BY Id DESC;",
+    function (err, results) {
+      let page_news = [];
+      let status = "";
+      for (let i = req.query.page * count_page; i < (parseInt(req.query.page) + 1) * count_page; i++) {
+        if (results[i] !== undefined)
+          page_news.push(results[i]);
+        if ((parseInt(req.query.page) + 2) * count_page > results.length && (parseInt(req.query.page) + 2) * count_page - results.length >= count_page)
+          status = "max";
+        else if ((parseInt(req.query.page) - 1) * count_page < 0)
+          status = "min";
+      }
+      if (parseInt(req.query.page) < 0)
+        res.redirect("/news?page=0");
+      else if (page_news.length == 0) {
+        let count = 0;
+        while ((count + 2) * count_page <= results.length)
+          count++;
+        
+        if ((count + 2) * count_page - results.length < count_page)
+          count++;
+        res.redirect("/news?page=" + count);
+      }
+      else
+        res.render(__dirname + '/сайт/start.ejs', { name: 'news', Results: page_news, full: false, page: req.query.page, status: status });
+    });
+});
+app.get('/NotFound', function (req, res) {
+  res.render(__dirname + '/сайт/start.ejs', { name: 'Not Found' });
+});
+app.get('/news/:id', function (req, res) {
+  connection.query("select * from news;",
+    function (err, results) {
+      let count = false;
+      for (i of results)
+        if (req.params['id'] == i.Id) {
+          count = true;
+          res.render(__dirname + '/сайт/start.ejs', { name: 'news', Results: [results], full: true });
+        }
+      if (count == false)
+        res.redirect("/NotFound");
+    });
 });
 app.get('/basket', function (req, res) {
   if (Object.keys(req.cookies).length == 0) {
@@ -52,14 +92,15 @@ app.get('/basket', function (req, res) {
     res.render(__dirname + '/сайт/start.ejs', { name: 'basket', user_info: req.cookies, Results: max_count });
 });
 app.get('/payment', function (req, res) {
-  res.render(__dirname + '/сайт/start.ejs', { name: 'payment'});
+  res.render(__dirname + '/сайт/start.ejs', { name: 'payment' });
 });
 app.get("/basket/buy", function (req, res) {
-  if (Object.keys(req.cookies).length == 0)
-    {res.cookie('item', '{"item":[],"count":[]}');
-  res.render(__dirname + '/сайт/start.ejs', { name: 'buy', Results: max_count, cookie: { "item": '{"item":[],"count":[]}' }, params: req.query });}
+  if (Object.keys(req.cookies).length == 0) {
+    res.cookie('item', '{"item":[],"count":[]}');
+    res.render(__dirname + '/сайт/start.ejs', { name: 'buy', Results: max_count, cookie: { "item": '{"item":[],"count":[]}' }, params: req.query });
+  }
   else
-  res.render(__dirname + '/сайт/start.ejs', { name: 'buy', Results: max_count, cookie: req.cookies, params: req.query });
+    res.render(__dirname + '/сайт/start.ejs', { name: 'buy', Results: max_count, cookie: req.cookies, params: req.query });
 });
 app.get("/:nameId/info", function (req, res) {
   for (i of max_count)
