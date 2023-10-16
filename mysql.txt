@@ -39,9 +39,9 @@ Email varchar(50) unique);
 drop table news;
 create table news(
 Id int not null AUTO_INCREMENT primary key,
-title varchar(50) unique,
-pre_content varchar(50) unique,
-content varchar(50) unique);
+title varchar(50),
+pre_content varchar(50),
+content varchar(50));
 
 insert into news(title, pre_content,content)
 values
