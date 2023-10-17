@@ -24,6 +24,22 @@
         font-size: 2vw;
     }
 </style>
+<%if(full!=null){%>
+<div class="button">
+    <button>
+        <a href="/shop">
+            <p>Товары</p>
+        </a>
+    </button>
+</div>
+<div class="button">
+    <button>
+        <a href="/basket">
+            <p>Корзина</p>
+        </a>
+    </button>
+</div>
+<% } %>
 <% if(full==false) { for(i of Results) {%>
     <div class="news">
         <p class="text">
