@@ -2,6 +2,7 @@ import requests
 import time
 cvecha=[];
 count=5;
+avg_cvecha=[0,0];
 def get_time():
     req=requests.get('https://api.binance.com/api/v3/time');
     return req.json()['serverTime']/1000;
@@ -10,6 +11,7 @@ def get_price():
     return float(req.json()['lastPrice']);
 def check(count,local_max,local_min,rev):
     check_cv=True;
+    local_avg=0;
     if(len(cvecha)>count):
         for i in range(1,count+1):
             if(rev==True and cvecha[-1-i]['open']>cvecha[-1-i]['close'] and cvecha[-1-i]['open']>local_max):
@@ -20,6 +22,17 @@ def check(count,local_max,local_min,rev):
                 check_cv=False;
             if(rev==False and cvecha[-1-i]['open']<cvecha[-1-i]['close'] and cvecha[-1-i]['open']<local_min):
                 check_cv=False;
+            local_avg+=abs(cvecha[-1-i]['open']-cvecha[-1-i]['close']);
+        if(local_avg/count<avg_cvecha[1] and otchet[0]==0):
+            if(rev==True):
+                check_cv=False;
+            if(rev==False):
+                check_cv=False;
+        if(local_avg/count<avg_cvecha[1] and otchet[0]==count):
+            if(rev==True):
+                hai[1]=0;
+            if(rev==False):
+                loi[1]=0;
         return check_cv;
     else:
         return None;
@@ -62,7 +75,31 @@ while True:
                 otchet[1]=0;
                 loi[1]=0;
                 print(loi[0]);
-            print(otchet,hai[1],loi[1]);
+            if(len(hai[0])>1 and len(loi[0])>1):
+                higher=[None,None];
+                if(hai[0][-2]-avg_cvecha[1]>hai[0][-1]):
+                    higher[0]=False;
+                if(loi[0][-2]-avg_cvecha[1]>loi[0][-1]):
+                    higher[1]=False;
+                if(hai[0][-2]+avg_cvecha[1]<hai[0][-1]):
+                    higher[0]=True;
+                if(loi[0][-2]+avg_cvecha[1]<loi[0][-1]):
+                    higher[1]=True;
+                if(higher[0]==True and higher[1]==True):
+                    print("Тренд вверх");
+                if(higher[0]==False and higher[1]==False):
+                    print("Тренд вниз");
+                if(higher[0]==False and higher[1]==True):
+                    print("Суживающийся треугольник");
+                if(higher[0]==True and higher[1]==False):
+                    print("Расширяющийся треугольник");
+                if(higher[0]==None):
+                    print("Двойная вершина");
+                if(higher[1]==None):
+                    print("Двойное дно");
+            print(otchet,hai[1],loi[1],avg_cvecha[1]);
+            avg_cvecha[0]+=local_max-local_min;
+            avg_cvecha[1]=avg_cvecha[0]/len(cvecha);
             cvecha.append({'min':price,'max':price,'open':price,'close':price});
         else:
             cvecha.append({'min':price,'max':price,'open':price,'close':price});
