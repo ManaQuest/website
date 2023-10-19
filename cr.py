@@ -23,12 +23,12 @@ def check(count,local_max,local_min,rev):
             if(rev==False and cvecha[-1-i]['open']<cvecha[-1-i]['close'] and cvecha[-1-i]['open']<local_min):
                 check_cv=False;
             local_avg+=abs(cvecha[-1-i]['open']-cvecha[-1-i]['close']);
-        if(local_avg/count<avg_cvecha[1] and otchet[0]==0):
+        if(local_avg/count<avg_cvecha[1]*3 and otchet[0]==0):
             if(rev==True):
-                check_cv=False;
+                hai[1]=0;
             if(rev==False):
-                check_cv=False;
-        if(local_avg/count<avg_cvecha[1] and otchet[0]==count):
+                loi[1]=0;
+        if(local_avg/count<avg_cvecha[1]*3 and otchet[0]==count):
             if(rev==True):
                 hai[1]=0;
             if(rev==False):
@@ -97,9 +97,9 @@ while True:
                     print("Двойная вершина");
                 if(higher[1]==None):
                     print("Двойное дно");
-            print(otchet,hai[1],loi[1],avg_cvecha[1]);
             avg_cvecha[0]+=local_max-local_min;
             avg_cvecha[1]=avg_cvecha[0]/len(cvecha);
+            print(otchet,hai[1],loi[1],round(avg_cvecha[1]),time_s[0]);
             cvecha.append({'min':price,'max':price,'open':price,'close':price});
         else:
             cvecha.append({'min':price,'max':price,'open':price,'close':price});
