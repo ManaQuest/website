@@ -23,15 +23,16 @@ def check(count,local_max,local_min,rev):
             if(rev==False and cvecha[-1-i]['open']<cvecha[-1-i]['close'] and cvecha[-1-i]['open']<local_min):
                 check_cv=False;
             local_avg+=abs(cvecha[-1-i]['open']-cvecha[-1-i]['close']);
-        if(local_avg/count<avg_cvecha[1]*3 and otchet[0]==0):
+        if(local_avg/count<avg_cvecha[1] and check_cv==True):
+            print(local_avg/count);
             if(rev==True):
-                hai[1]=0;
+                check_cv=None;
             if(rev==False):
-                loi[1]=0;
-        if(local_avg/count<avg_cvecha[1]*3 and otchet[0]==count):
-            if(rev==True):
+                check_cv=None;
+        if(local_avg/count<avg_cvecha[1]):
+            if(rev==True and otchet[0]==count):
                 hai[1]=0;
-            if(rev==False):
+            if(rev==False and otchet[1]==count):
                 loi[1]=0;
         return check_cv;
     else:
@@ -60,11 +61,17 @@ while True:
                 otchet[0]=0;
             elif(hai[1]>local_max and hai[1]!=0 and check(5,local_max,local_min,True)==False):
                 otchet[0]+=1;
+            else:
+                hai[1]=0;
+                otchet[0]=0;
             if(check(5,local_max,local_min,False)==True):
                 loi[1]=local_min;
                 otchet[1]=0;
             elif(loi[1]<local_min and loi[1]!=0 and check(5,local_max,local_min,False)==False):
                 otchet[1]+=1;
+            else:
+                loi[1]=0;
+                otchet[1]=0;
             if(otchet[0]==count):
                 hai[0].append(hai[1]);
                 otchet[0]=0;
@@ -99,7 +106,7 @@ while True:
                     print("Двойное дно");
             avg_cvecha[0]+=local_max-local_min;
             avg_cvecha[1]=avg_cvecha[0]/len(cvecha);
-            print(otchet,hai[1],loi[1],round(avg_cvecha[1]),time_s[0]);
+            print(otchet,hai[1],loi[1],round(avg_cvecha[1],2),time_s[0]);
             cvecha.append({'min':price,'max':price,'open':price,'close':price});
         else:
             cvecha.append({'min':price,'max':price,'open':price,'close':price});
