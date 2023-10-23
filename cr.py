@@ -13,34 +13,57 @@ def get_price():
 def get_history():
     req=requests.get('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m');
     return req.json();
-def check(count,local_max,local_min,rev):
+"""
+def check(count,local_max,local_min,rev,otchet):
     check_cv=True;
     local_avg=0;
     if(len(cvecha)>count):
-        for i in range(1,count+1):
-            if(rev==True and cvecha[-1-i]['open']>cvecha[-1-i]['close'] and cvecha[-1-i]['open']>local_max):
-                check_cv=False;
-            if(rev==True and cvecha[-1-i]['open']<cvecha[-1-i]['close'] and cvecha[-1-i]['close']>local_max):
-                check_cv=False;
-            if(rev==False and cvecha[-1-i]['open']>cvecha[-1-i]['close'] and cvecha[-1-i]['close']<local_min):
-                check_cv=False;
-            if(rev==False and cvecha[-1-i]['open']<cvecha[-1-i]['close'] and cvecha[-1-i]['open']<local_min):
-                check_cv=False;
-            local_avg+=abs(cvecha[-1-i]['open']-cvecha[-1-i]['close']);
-        if(local_avg/count<avg_cvecha[1] and check_cv==True):
-            print(local_avg/count);
+        if(otchet!=count-1):
+            for i in range(1,count+1):
+                if(rev==True and max(cvecha[-1-i]['open'],cvecha[-1-i]['close'])>=local_max):
+                    check_cv=False;
+                if(rev==False and min(cvecha[-1-i]['open'],cvecha[-1-i]['close'])<=local_min):
+                    check_cv=False;
+            if(rev==True and check_cv==True):
+                hai[1]=local_max;
+                otchet=0;
+            if(rev==False and check_cv==True):
+                loi[1]=local_min;
+                otchet=0;
+            if(rev==True and i==count):
+                local_avg=hai[1]-min(cvecha[-1-count]['open'],cvecha[-1-count]['close']);
+            if(rev==False and i==count):
+                local_avg=max(cvecha[-1-count]['open'],cvecha[-1-count]['close'])-loi[1];
+        else:
+            for i in range(count):
+                if(rev==True and max(cvecha[-1-i]['open'],cvecha[-1-i]['close'])>=local_max):
+                    check_cv=False;
+                if(rev==False and min(cvecha[-1-i]['open'],cvecha[-1-i]['close'])<=local_min):
+                    check_cv=False;
+            if(rev==True and check_cv==True):
+                hai[1]=local_max;
+                otchet=0;
+            if(rev==False and check_cv==True):
+                loi[1]=local_min;
+                otchet=0;
             if(rev==True):
-                check_cv=None;
+                local_avg=hai[1]-min(cvecha[-1]['open'],cvecha[-1]['close']);
             if(rev==False):
-                check_cv=None;
-        if(local_avg/count<avg_cvecha[1] and check_cv==False):
-            if(rev==True and otchet[0]==count-1):
+                local_avg=max(cvecha[-1]['open'],cvecha[-1]['close'])-loi[1];
+        local_avg=abs(local_avg);
+        if(local_avg<avg_cvecha[1] and check_cv==True):
+            print(local_avg,cvecha[-1]);
+            check_cv=None;
+        if(local_avg<avg_cvecha[1] and check_cv==False):
+            print(local_avg,cvecha[-1],"aaaa");
+            if(rev==True and otchet==count-1):
                 hai[1]=0;
-            if(rev==False and otchet[1]==count-1):
+            if(rev==False and otchet==count-1):
                 loi[1]=0;
         return check_cv;
     else:
         return None;
+"""
 educ_arr=get_history();
 index=0;
 time_s=[time.localtime(get_time()).tm_min,0];
@@ -48,6 +71,43 @@ time_s[1]=time_s[0];
 otchet=[0,0];
 hai=[[],0];
 loi=[[],0];
+def check(count,rev):
+    start=1;
+    if(rev==True):
+        if(otchet[0]==count-1):
+            start=0;
+    else:
+        if(otchet[1]==count-1):
+            start=0;
+    if(len(cvecha)>count):
+        check_cv=True;
+        local_avg=0;
+        for i in range(start,count+start):
+            if(rev==True and max(cvecha[-1-i]['open'],cvecha[-1-i]['close'])>local_max):
+                check_cv=False;
+            if(rev==False and min(cvecha[-1-i]['open'],cvecha[-1-i]['close'])<local_min):
+                check_cv=False;
+        if(check_cv==True):
+            if(rev==True):
+                hai[1]=local_max;
+            if(rev==False):
+                loi[1]=local_min;
+        if(start==1):
+            if(rev==True):
+                local_avg=hai[1]-min(cvecha[-1-count]['open'],cvecha[-1-count]['close']);
+            if(rev==False):
+                local_avg=max(cvecha[-1-count]['open'],cvecha[-1-count]['close'])-loi[1];
+        else:
+            if(rev==True):
+                local_avg=hai[1]-min(cvecha[-1]['open'],cvecha[-1]['close']);
+            if(rev==False):
+                local_avg=max(cvecha[-1]['open'],cvecha[-1]['close'])-loi[1];
+        local_avg=abs(local_avg);
+        if(local_avg<avg_cvecha[1] and (check_cv==True or (check_cv==False and otchet==count-1))):
+            check_cv=None;
+        return check_cv;
+    else:
+        return None;
 while True:
     if(education==False):
         price=get_price();
@@ -58,24 +118,20 @@ while True:
         if(len(cvecha)>0):
             if(education==False):
                 cvecha[-1]['close']=price;
-            if(cvecha[-1]['open']>cvecha[-1]['close']):
-                local_max=cvecha[-1]['open'];
-                local_min=cvecha[-1]['close'];
-            elif(cvecha[-1]['open']<cvecha[-1]['close']):
-                local_max=cvecha[-1]['close'];
-                local_min=cvecha[-1]['open'];
-            if(check(5,local_max,local_min,True)==True):
+            local_max=max(cvecha[-1]['open'],cvecha[-1]['close']);
+            local_min=min(cvecha[-1]['open'],cvecha[-1]['close']);
+            if(check(count,True)==True):
                 hai[1]=local_max;
                 otchet[0]=0;
-            elif(hai[1]>=local_max and hai[1]!=0 and check(5,local_max,local_min,True)==False):
+            elif(check(count,True)==False and hai[1]>local_max and hai[1]!=0):
                 otchet[0]+=1;
             else:
                 hai[1]=0;
                 otchet[0]=0;
-            if(check(5,local_max,local_min,False)==True):
+            if(check(count,False)==True):
                 loi[1]=local_min;
                 otchet[1]=0;
-            elif(loi[1]<=local_min and loi[1]!=0 and check(5,local_max,local_min,False)==False):
+            elif(check(count,False)==False and loi[1]<local_min and loi[1]!=0):
                 otchet[1]+=1;
             else:
                 loi[1]=0;
@@ -117,7 +173,7 @@ while True:
             if(education==False):
                 print(otchet,hai[1],loi[1],round(avg_cvecha[1],2),time_s[0]);
             else:
-                print(otchet,hai[1],loi[1],round(avg_cvecha[1],2),time.localtime(int(educ_arr[index][0])/1000).tm_min);
+                print(otchet,hai[1],loi[1],round(avg_cvecha[1],2),time.localtime(int(educ_arr[index][0])/1000).tm_min,time.localtime(int(educ_arr[index][0])/1000).tm_hour);
             if(education==True):
                 cvecha.append({'min':float(educ_arr[index][3]),'max':float(educ_arr[index][2]),'open':float(educ_arr[index][1]),'close':float(educ_arr[index][4])});
                 index+=1;
