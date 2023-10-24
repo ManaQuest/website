@@ -24,7 +24,7 @@ for (let x = 1; x < 100; x++) {
                 console.log(arr[j], Math.pow(x, 2) + Math.pow(x + j, 2) - (Math.pow(x + Math.floor(j / 2) + 1, 2) + Math.pow(x + Math.floor(j / 2), 2)));
 }
 //for (let i = 0; i < 100; i++)
-    //console.log(i, arr[i]);
+//console.log(i, arr[i]);
 var matrix = [];
 for (let i = 0; i < 3; i++) {
     matrix.push([]);
@@ -39,10 +39,10 @@ for (let i = 0; i < 3; i++) {
     [46, 68, 36],
     [62, 42, 50],
     [60, 52, 36]];*/
-    var matrix = [
-        [46, 68, 36],
-        [62, 42, 50],
-        [60, 52, 36]];
+var matrix = [
+    [46, 68, 36],
+    [62, 42, 50],
+    [60, 52, 36]];
 var sum = [0, 0, 0, 0, 0, 0, 0, 0];
 function get_sum() {
     sum = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -109,9 +109,38 @@ for (let s = 0; s < 10000; s++) {
     }
 }
 var matrix = [
-    [34, 47,69],
+    [34, 47, 69],
     [62, 42, 50],
     [60, 52, 36]];
+var ar = [[], [], []];
+for (let i = 0; i < 3; i++)
+    console.log(matrix[i]);
+function change() {
+    for (let a = 0; a < 10; a++) {
+        for (let d = 0; d < 3; d++) {
+            ar = [[], [], []];
+            sum = get_sum();
+            for (let i = 1; i < 101; i++) {
+                ar[0].push((matrix[d][0] + i) * (i - matrix[d][0]));
+                ar[1].push((matrix[d][1] + i) * (i - matrix[d][1]));
+                ar[2].push((matrix[d][2] + i) * (i - matrix[d][2]));
+            }
+            for (let i = 0; i < 100; i++)
+                for (let j = 0; j < 100; j++)
+                    for (let s = 0; s < 100; s++)
+                        if (ar[0][i] + ar[1][j] + ar[2][s] == sum[0] - sum[d] && d > 0) {
+                            if ((i + 1) != matrix[d-1][0]) {
+                                matrix[d][0] = i + 1;
+                                matrix[d][1] = j + 1;
+                                matrix[d][2] = s + 1;
+                            }
+                        }
+        }
+    }
+}
+sum = get_sum();
+console.log(sum);
+change();
 sum = get_sum();
 for (let i = 0; i < 3; i++)
     console.log(matrix[i]);
