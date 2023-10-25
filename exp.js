@@ -108,10 +108,10 @@ for (let s = 0; s < 10000; s++) {
             }
     }
 }
-var matrix = [
+/*var matrix = [
     [34, 47,69],
     [62, 42, 50],
-    [60, 52, 36]];
+    [60, 52, 36]];*/
 sum = get_sum();
 for (let i = 0; i < 3; i++)
     console.log(matrix[i]);
