@@ -108,12 +108,10 @@ for (let s = 0; s < 10000; s++) {
             }
     }
 }
-<<<<<<< HEAD
 /*var matrix = [
     [34, 47,69],
     [62, 42, 50],
     [60, 52, 36]];*/
-=======
 var matrix = [
     [34, 47, 69],
     [62, 42, 50],
@@ -121,33 +119,31 @@ var matrix = [
 var ar = [[], [], []];
 for (let i = 0; i < 3; i++)
     console.log(matrix[i]);
-function change() {
+function change(m,sum) {
     for (let a = 0; a < 10; a++) {
-        for (let d = 0; d < 3; d++) {
-            ar = [[], [], []];
-            sum = get_sum();
-            for (let i = 1; i < 101; i++) {
-                ar[0].push((matrix[d][0] + i) * (i - matrix[d][0]));
-                ar[1].push((matrix[d][1] + i) * (i - matrix[d][1]));
-                ar[2].push((matrix[d][2] + i) * (i - matrix[d][2]));
-            }
-            for (let i = 0; i < 100; i++)
-                for (let j = 0; j < 100; j++)
-                    for (let s = 0; s < 100; s++)
-                        if (ar[0][i] + ar[1][j] + ar[2][s] == sum[0] - sum[d] && d > 0) {
-                            if ((i + 1) != matrix[d-1][0]) {
-                                matrix[d][0] = i + 1;
-                                matrix[d][1] = j + 1;
-                                matrix[d][2] = s + 1;
-                            }
-                        }
+        ar = [[], [], []];
+        let sum_l = Math.pow(m[0],2)+Math.pow(m[1],2)+Math.pow(m[2],2);
+        for (let i = 1; i < 101; i++) {
+            ar[0].push((m[0] + i) * (i - m[0]));
+            ar[1].push((m[1] + i) * (i - m[1]));
+            ar[2].push((m[2] + i) * (i - m[2]));
         }
+        for (let i = 0; i < 100; i++)
+            for (let j = 0; j < 100; j++)
+                for (let s = 0; s < 100; s++)
+                    if (ar[0][i] + ar[1][j] + ar[2][s] == sum - sum_l) {
+                        if ((i + 1) != matrix[1][0]) {
+                            m[0] = i + 1;
+                            m[1] = j + 1;
+                            m[2] = s + 1;
+                        }
+                    }
     }
 }
 sum = get_sum();
 console.log(sum);
-change();
->>>>>>> 1ce91b3ad170a1ffd39ae9696f026f0f813f6a83
+change(matrix[1],sum[0]);
+change(matrix[2],sum[0]);
 sum = get_sum();
 for (let i = 0; i < 3; i++)
     console.log(matrix[i]);
